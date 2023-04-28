@@ -1,0 +1,24 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: send_ardis",
+            "type": "python",
+            "request": "launch",
+            "program": "/mnt/SSD/github/gtrp-ardis/Python/send_ardis.py",
+            "args": [
+                "--host", "http://localhost:6543/",
+                "-u", "admin",
+                "-p", "qwe123",
+                "--layouts-file", "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",
+                "--parts-file",   "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_TESTE.csv",
+                "--sep", ";"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

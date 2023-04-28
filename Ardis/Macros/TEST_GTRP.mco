@@ -1,0 +1,9 @@
+﻿//-----------------------------------------------
+// EXPORTAÇÃO DOS DADOS DO LAYOUT PARA O DB TEMPOX
+//-----------------------------------------------
+EXPORT('CSV_TO_TEMPOX_DB_TESTE')
+//CALL("\\172.16.0.4\ardis\ARQUIVOS ARDIS\APPs\INSERT_ARDIS_TARDLAY v1.1.exe")
+
+//EXPORTA OS DADOS DE CONSUMO DE CHAPA POR ORDEM
+EXPORT('CSV_TO_TEMPOX_DB_MATORD_TESTE')
+//CALL("\\172.16.0.4\ardis\ARQUIVOS ARDIS\APPs\INSERT_ARDIS_INU_ORDMAT.exe")

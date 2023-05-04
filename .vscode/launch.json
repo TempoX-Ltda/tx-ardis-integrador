@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "/mnt/SSD/github/gtrp-ardis/Python/send_ardis.py",
             "args": [
-                "--host", "http://localhost:6543/",
+                "--host", "http://172.16.0.253:6544/",
                 "-u", "admin",
                 "-p", "qwe123",
                 "--layouts-file", "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",

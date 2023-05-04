@@ -78,8 +78,13 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+logger.debug('Argumentos: %s', args)
+
 URL_PLANO_DE_CORTE       = urljoin(args.host, 'plano-de-corte')
 URL_PLANO_DE_CORTE_PECAS = urljoin(args.host, 'plano-de-corte/pecas')
+
+logger.debug('URL_PLANO_DE_CORTE: %s',       URL_PLANO_DE_CORTE)
+logger.debug('URL_PLANO_DE_CORTE_PECAS: %s', URL_PLANO_DE_CORTE_PECAS)
 
 # Cria sessão da API e coleta o token que é utilizado nas futuras requisições
 s = Session()
@@ -96,7 +101,11 @@ try:
 
     login.raise_for_status()
 
+    logger.info('Sucesso no Login')
+
 except Exception as e:
+
+    logger.exception('')
 
     try:
         mensagem = e.response.json().get('mensagem')
@@ -122,7 +131,7 @@ parts   = read_csv(args.parts_file,   sep=args.sep)
 
 # Envia os layouts
 for row_num, layout in enumerate(layouts.itertuples(index=True)):
-    logger.debug(layout)
+    logger.debug('Enviando layout: %s',layout)
 
     if not sg.one_line_progress_meter(
                                 'Enviando Layouts',
@@ -158,8 +167,8 @@ for row_num, layout in enumerate(layouts.itertuples(index=True)):
     try:
         res.raise_for_status()
     except HTTPError as e:
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.exception('')
+
+        logger.exception('')
 
         try:
             mensagem = e.response.json().get('mensagem')
@@ -187,7 +196,7 @@ sg.one_line_progress_meter_cancel()
 
 # Envia as pecas
 for row_num, part in enumerate(parts.itertuples(index=True)):
-    logger.debug(part)
+    logger.debug('Enviando peça: %s', part)
 
     if not sg.one_line_progress_meter(
                                 'Enviando Peças',
@@ -215,8 +224,8 @@ for row_num, part in enumerate(parts.itertuples(index=True)):
     try:
         res.raise_for_status()
     except HTTPError as e:
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.exception('')
+
+        logger.exception('')
 
         try:
             mensagem = e.response.json().get('mensagem')

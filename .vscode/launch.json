@@ -19,6 +19,24 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: busca_retrabalho",
+            "type": "python",
+            "request": "launch",
+            "program": "/workspaces/gtrp-ardis/BuscaRetrabalho/busca_retrabalho.py",
+            "args": [
+                "--host", "http://172.16.1.16:6543/",
+                "-u", "admin",
+                "-p", "qwe123",
+                "--data-inicio", "2023-05-08 16:20:01",
+                "--data-fim",    "2023-05-09 11:30:00",
+                "--urgente",
+                "--file-path", "/workspaces/gtrp-ardis/BuscaRetrabalho/retrabalhos.csv",
+                "--sep", ";"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

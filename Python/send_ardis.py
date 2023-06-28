@@ -81,7 +81,7 @@ args = parser.parse_args()
 logger.debug('Argumentos: %s', args)
 
 URL_PLANO_DE_CORTE       = urljoin(args.host, 'plano-de-corte')
-URL_PLANO_DE_CORTE_PECAS = urljoin(args.host, 'plano-de-corte/pecas')
+URL_PLANO_DE_CORTE_PECAS = urljoin(args.host, 'plano-de-corte/{codigo_layout}/pecas')
 
 logger.debug('URL_PLANO_DE_CORTE: %s',       URL_PLANO_DE_CORTE)
 logger.debug('URL_PLANO_DE_CORTE_PECAS: %s', URL_PLANO_DE_CORTE_PECAS)
@@ -207,16 +207,15 @@ def envia_pecas(parts):
             break
 
         peca = {
-            "codigo_layout":         part.codigo_layout,
-            "qtd_cortada_no_layout": part.qtd_cortada_no_layout,
-            "id_unico_peca":         part.id_unico_peca,
-            "tempo_corte_segundos":  part.tempo_corte_segundos
+            "qtd_cortada_no_layout": str(part.qtd_cortada_no_layout),
+            "id_unico_peca":         str(part.id_unico_peca),
+            "tempo_corte_segundos":  str(part.tempo_corte_segundos)
         }
 
         logger.info(f'Cadastrando Peca {part.id_unico_peca}')
 
         res = s.post(
-            url=URL_PLANO_DE_CORTE_PECAS,
+            url=URL_PLANO_DE_CORTE_PECAS.format(codigo_layout = part.codigo_layout),
             json=peca
         )
 

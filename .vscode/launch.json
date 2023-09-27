@@ -16,7 +16,8 @@
                 "--layouts-file", "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",
                 "--parts-file",   "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_TESTE.csv",
                 "--sep", ";",
-                "--error-on-duplicated-part"
+                "--error-on-duplicated-part",
+                "--figures-directory", "/mnt/SSD/github/gtrp-ardis/Ardis/Figures"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

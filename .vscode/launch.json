@@ -15,7 +15,8 @@
                 "-p", "qwe123",
                 "--layouts-file", "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",
                 "--parts-file",   "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_TESTE.csv",
-                "--sep", ";"
+                "--sep", ";",
+                "--error-on-duplicated-part"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

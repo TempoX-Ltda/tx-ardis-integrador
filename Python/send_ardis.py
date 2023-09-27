@@ -76,6 +76,12 @@ parser.add_argument(
     default=','
 )
 
+parser.add_argument(
+    '--error-on-duplicated-part',
+    action='store_true',
+    help='Impede o programa de continuar se o id único de uma peça já está inserido em algum plano ativo',
+)
+
 args = parser.parse_args()
 
 logger.debug('Argumentos: %s', args)
@@ -107,13 +113,13 @@ def get_auth_key():
 
         return login.json().get('retorno').get('key')
 
-    except Exception as e:
+    except Exception as exc:
 
         logger.exception('')
 
         try:
-            mensagem = e.response.json().get('mensagem')
-        except:
+            mensagem = exc.response.json().get('mensagem')
+        except Exception:
             mensagem = 'A API não enviou uma mensagem de erro, verifique os logs.'
 
         sg.Popup(
@@ -124,7 +130,7 @@ def get_auth_key():
             button_type=sg.POPUP_BUTTONS_OK
         )
 
-        raise SystemExit
+        raise SystemExit from exc
 
 def envia_layouts(layouts):
     # Envia os layouts
@@ -164,13 +170,13 @@ def envia_layouts(layouts):
 
         try:
             res.raise_for_status()
-        except HTTPError as e:
+        except HTTPError as exc:
 
             logger.exception('')
 
             try:
-                mensagem = e.response.json().get('mensagem')
-            except:
+                mensagem = exc.response.json().get('mensagem')
+            except Exception:
                 mensagem = 'A API não enviou uma mensagem de erro, verifique os logs.'
 
             logger.error(mensagem)
@@ -180,15 +186,14 @@ def envia_layouts(layouts):
                             'Ocorreu um erro ao enviar esse layout:',
                             mensagem,
                             f'Log completo em: {log_file}',
-                            'Deseja continuar o envio dos outros layouts?',
                             title='Erro ao enviar Layouts',
-                            button_type=sg.POPUP_BUTTONS_YES_NO
+                            button_type=sg.POPUP_BUTTONS_OK
                         )
-            if response == 'No' or not response:
-                sg.one_line_progress_meter_cancel()
-                raise SystemExit
+            
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
         else:
-            logger.debug(f'ok')
+            logger.debug('ok')
 
     sg.one_line_progress_meter_cancel()
 
@@ -200,9 +205,9 @@ def envia_pecas(parts):
         if not sg.one_line_progress_meter(
                                     'Enviando Peças',
                                     row_num, len(parts.index),
-                                    f'Layout: {part.codigo_layout}'
-                                    f'ID Ordem: {part.id_ordem}',
-                                    f'ID Único: {part.id_unico_peca}',
+                                    f'Layout: {part.codigo_layout}\n'
+                                    f'ID Ordem: {part.id_ordem}\n',
+                                    f'ID Único: {part.id_unico_peca}\n',
                                     orientation='h'):
             break
 
@@ -221,13 +226,13 @@ def envia_pecas(parts):
 
         try:
             res.raise_for_status()
-        except HTTPError as e:
+        except HTTPError as exc:
 
             logger.exception('')
 
             try:
-                mensagem = e.response.json().get('mensagem')
-            except:
+                mensagem = exc.response.json().get('mensagem')
+            except Exception:
                 mensagem = 'A API não enviou uma mensagem de erro, verifique os logs.'
 
             logger.error(mensagem)
@@ -245,9 +250,96 @@ def envia_pecas(parts):
                         )
             if response == 'No' or not response:
                 sg.one_line_progress_meter_cancel()
-                raise SystemExit
+                raise SystemExit from exc
         else:
-            logger.debug(f'ok')
+            logger.debug('ok')
+
+    sg.one_line_progress_meter_cancel()
+
+def verifica_duplicidade_pecas(parts):
+    """
+        Verifica se já alguma peça já está inserida em algum plano de corte ativo
+    """
+
+    for row_num, part in enumerate(parts.itertuples(index=True)):
+        logger.debug('Consultando peça: %s ...', part)
+
+        if not sg.one_line_progress_meter(
+                                    'Consultando Peças Duplicadas',
+                                    row_num, len(parts.index),
+                                    f'Layout: {part.codigo_layout}\n'
+                                    f'ID Ordem: {part.id_ordem}\n',
+                                    f'ID Único: {part.id_unico_peca}\n',
+                                    orientation='h'):
+            break
+
+        res = s.get(
+            url=urljoin(args.host, f'plano-de-corte/peca/{part.id_unico_peca}'),
+        )
+
+        try:
+            res.raise_for_status()
+        except HTTPError as exc:
+
+            logger.exception('')
+
+            try:
+                mensagem = e.response.json().get('mensagem')
+            except Exception:
+                mensagem = 'A API não enviou uma mensagem de erro, verifique os logs.'
+
+            logger.error(mensagem)
+
+            response = sg.Popup(
+                            f'Layout: {part.codigo_layout} \n'
+                            f'ID Ordem: {part.id_ordem} \n',
+                            f'ID Único: {part.id_unico_peca} \n'
+                            'Ocorreu um erro ao consultar essa peça:',
+                            mensagem,
+                            f'Log completo em: {log_file}',
+                            'Deseja continuar a conferência das outras peças?',
+                            title='Erro ao consultar peças',
+                            button_type=sg.POPUP_BUTTONS_YES_NO
+                        )
+            if response == 'No' or not response:
+                sg.one_line_progress_meter_cancel()
+                raise SystemExit from exc
+            
+            continue
+            
+        planos = res.json().get('retorno')
+
+        if not planos:
+            continue
+
+        for plano in planos:
+
+            if str(plano.get("PlanoDeCorte").get("codigo_layout")).startswith(('RETR', 'ASS')):
+                # O Plano que ja foi enviado NÃO é um plano de LOTE
+                continue
+
+            if plano.get('PlanoDeCorte').get('inativo') == True:
+                # Plano NÃO está Ativo
+                continue
+
+            if (
+                    plano.get('PlanoDeCorte').get('finalizado') == False # Plano NÃO foi cortado
+                        or 
+                    not str(part.codigo_layout).startswith(('RETR', 'ASS')) # O Plano atual é um plano de LOTE 
+                ):
+                    response = sg.Popup(
+                            f'ID Ordem: {part.id_ordem}',
+                            f'ID Único: {part.id_unico_peca} \n'
+                            'Essa peça já está inserida no seguinte plano de corte:',
+                            f'{plano.get("PlanoDeCorte").get("codigo_layout")} - {plano.get("PlanoDeCorte").get("nome_projeto")}\n',
+                            "Finalizado: Sim\n" if plano.get("PlanoDeCorte").get("finalizado") == True else "Finalizado: Não\n",
+                            'Processo será interrompido!',
+                            title='Peça já foi inserida',
+                            button_type=sg.POPUP_BUTTONS_OK
+                        )
+                    
+                    sg.one_line_progress_meter_cancel()
+                    raise SystemExit
 
     sg.one_line_progress_meter_cancel()
 
@@ -259,6 +351,9 @@ def main():
     layouts = read_csv(args.layouts_file, sep=args.sep)
     parts   = read_csv(args.parts_file,   sep=args.sep)
 
+    if args.error_on_duplicated_part:
+        verifica_duplicidade_pecas(parts)
+
     envia_layouts(layouts)
 
     envia_pecas(parts)
@@ -266,24 +361,27 @@ def main():
     sg.Popup(
         'Envio finalizado!',
         f'Log completo em: {log_file}',
+        'Essa mensagem irá fechar automaticamente em 5 segundos.',
         title='Envio finalizado',
-        button_type=sg.POPUP_BUTTONS_OK
+        button_type=sg.POPUP_BUTTONS_OK,
+        auto_close=True,
+        auto_close_duration=5,
     )
 
 if __name__ == '__main__':
     
     try:
         main()
-    except Exception as e:
+    except Exception as exc:
     
         logger.exception('')
 
         sg.Popup(
             'Ocorreu um erro não esperado',
-            str(e),
+            str(exc),
             f'Log completo em: {log_file}',
             title='Erro não esperado',
             button_type=sg.POPUP_BUTTONS_OK
         )
 
-        raise SystemExit
+        raise SystemExit from exc

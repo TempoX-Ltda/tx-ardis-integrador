@@ -8,37 +8,19 @@
             "name": "Python: send_ardis",
             "type": "python",
             "request": "launch",
-            "program": "/mnt/SSD/github/gtrp-ardis/Python/send_ardis.py",
+            "program": "${workspaceFolder}/send_ardis.py",
             "args": [
-                "--host", "http://localhost:6543/",
+                "--host", "http://172.16.1.16:6543/",
                 "-u", "admin",
                 "-p", "qwe123",
-                "--layouts-file", "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",
-                "--parts-file",   "/mnt/SSD/github/gtrp-ardis/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_TESTE.csv",
+                "--layouts-file", "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",
+                "--parts-file",   "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_TESTE.csv",
                 "--sep", ";",
-                "--error-on-duplicated-part",
-                "--figures-directory", "/mnt/SSD/github/gtrp-ardis/Ardis/Figures"
+                //"--error-on-duplicated-part",
+                "--figures-directory", "'${workspaceFolder}/Ardis/Figures'"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
         },
-        {
-            "name": "Python: busca_retrabalho",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/BuscaRetrabalho/busca_retrabalho.py",
-            "args": [
-                "--host", "http://172.16.0.253:6544/",
-                "-u", "admin",
-                "-p", "qwe123",
-                "--data-inicio", "2023-08-30 00:00:00",
-                "--data-fim",    "2023-08-31 23:59:59",
-                "--urgente",
-                "--file-path", "${workspaceFolder}/BuscaRetrabalho/retrabalhos.csv",
-                "--sep", ";"
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": true
-        }
     ]
 }

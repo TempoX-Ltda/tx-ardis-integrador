@@ -197,7 +197,10 @@ def envia_layouts(layouts):
 
         logger.info('Enviando figure do plano_de_corte %s', layout.codigo_layout)
 
-        figure_path = os.path.join(args.figures_directory, f'{layout.codigo_layout}.png')
+        figure_path = os.path.join(
+            str(args.figures_directory).strip('"').strip("'"), # Remove ' and/or " from figures_directory
+            f'{layout.codigo_layout}.png'
+        )
 
         if not os.path.exists(figure_path):
             logger.warning('O arquivo "%s" não foi encontrado', figure_path)

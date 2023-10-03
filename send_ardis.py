@@ -13,6 +13,8 @@ from requests.exceptions import HTTPError
 from pandas import read_csv
 import PySimpleGUI as sg
 
+__version__ = '1.0.0'
+
 sg.theme('Dark Blue 3')
 
 log_file = tempfile.gettempdir() + '/send_ardis.log'
@@ -36,6 +38,12 @@ logger.addHandler(stdout_handler)
 parser = ArgumentParser(
     prog='send_ardis',
     description='Insere as informações das otimizações do Ardis no sistema GTRP.'
+)
+
+parser.add_argument(
+    '-v', '--version',
+    action='version',
+    version='%(prog)s ' + __version__
 )
 
 parser.add_argument(

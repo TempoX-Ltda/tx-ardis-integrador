@@ -3,4 +3,4 @@ install_deps:
 	pip install pyinstaller
 
 build:
-	pyinstaller busca_retrabalho.py -F
+	pyinstaller send_ardis.py -F

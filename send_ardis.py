@@ -283,12 +283,12 @@ def envia_pecas(parts):
             break
 
         peca = {
-            "qtd_cortada_no_layout": str(part.qtd_cortada_no_layout),
-            "id_unico_peca":         str(part.id_unico_peca),
-            "tempo_corte_segundos":  str(part.tempo_corte_segundos)
+            "qtd_cortada_no_layout": int(part.qtd_cortada_no_layout),
+            "id_unico_peca":         int(part.id_unico_peca),
+            "tempo_corte_segundos":  float(part.tempo_corte_segundos)
         }
 
-        logger.info('Cadastrando Peca %s', part.id_unico_peca)
+        logger.info('Cadastrando Peca %s', int(part.id_unico_peca))
 
         res = s.post(
             url=URL_PLANO_DE_CORTE_PECAS.format(codigo_layout = part.codigo_layout),
@@ -344,8 +344,62 @@ def verifica_duplicidade_pecas(parts):
                                     orientation='h'):
             break
 
+        # Verifica se o id_unico_peca é um número inteiro
+        try:
+            int(part.id_unico_peca)
+        except ValueError as exc:
+            logger.exception('')
+            response = sg.Popup(
+                    f'Layout: {part.codigo_layout}',
+                    f'ID Ordem: {part.id_ordem}',
+                    f'ID Único: {part.id_unico_peca}',
+                    'O campo "id_unico_peca" não pode ser interpretado como INTEGER.',
+                    f'id_unico_peca: {part.id_unico_peca}',
+                    f'Log completo em: {log_file}',
+                    title='Erro',
+                    button_type=sg.POPUP_BUTTONS_OK
+                )
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
+
+        # Verifica se o qtd_cortada_no_layout é um número inteiro
+        try:
+            int(part.qtd_cortada_no_layout)
+        except ValueError as exc:
+            logger.exception('')
+            response = sg.Popup(
+                    f'Layout: {part.codigo_layout}',
+                    f'ID Ordem: {part.id_ordem}',
+                    f'ID Único: {part.id_unico_peca}',
+                    'O campo "qtd_cortada_no_layout" não pode ser interpretado como INTEGER.',
+                    f'qtd_cortada_no_layout: {part.qtd_cortada_no_layout}',
+                    f'Log completo em: {log_file}',
+                    title='Erro',
+                    button_type=sg.POPUP_BUTTONS_OK
+                )
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
+
+        # Verifica se o tempo_corte_segundos é um número float
+        try:
+            float(part.tempo_corte_segundos)
+        except ValueError as exc:
+            logger.exception('')
+            response = sg.Popup(
+                    f'Layout: {part.codigo_layout}',
+                    f'ID Ordem: {part.id_ordem}',
+                    f'ID Único: {part.id_unico_peca}',
+                    'O campo "tempo_corte_segundos" não pode ser interpretado como FLOAT.',
+                    f'tempo_corte_segundos: {part.tempo_corte_segundos}',
+                    f'Log completo em: {log_file}',
+                    title='Erro',
+                    button_type=sg.POPUP_BUTTONS_OK
+                )
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
+
         res = s.get(
-            url=urljoin(args.host, f'plano-de-corte/peca/{part.id_unico_peca}'),
+            url=urljoin(args.host, f'plano-de-corte/peca/{int(part.id_unico_peca)}'),
         )
 
         try:

@@ -26,6 +26,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          /src/dist/send_ardis.exe
+          src/dist/windows/send_ardis.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

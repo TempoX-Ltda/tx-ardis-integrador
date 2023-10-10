@@ -1,0 +1,31 @@
+name: Package Application with Pyinstaller
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: PyInstaller Windows
+      # You may pin to the exact commit or the version.
+      # uses: JackMcKew/pyinstaller-action-windows@a8dee21ad01bbc7e7363d445bb632691b95ba057
+      uses: JackMcKew/pyinstaller-action-windows@v0.1.2
+      with:
+        # Directory containing source code (optional requirements.txt).
+        path: .
+
+    - name: Add File to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          /dist/send_ardis.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

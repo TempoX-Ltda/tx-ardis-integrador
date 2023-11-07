@@ -8,7 +8,7 @@
             "name": "Python: send_ardis",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/send_ardis.py",
+            "program": "${workspaceFolder}/src/send_ardis.py",
             "args": [
                 "--host", "http://172.16.1.16:6543/",
                 "-u", "admin",

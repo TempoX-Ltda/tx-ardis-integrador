@@ -13,7 +13,7 @@ from requests.exceptions import HTTPError
 from pandas import read_csv
 import PySimpleGUI as sg
 
-__version__ = '1.0.0'
+__version__ = '1.0.2'
 
 sg.theme('Dark Blue 3')
 
@@ -168,6 +168,9 @@ def envia_layouts(layouts):
             "nome_projeto":        layout.nome_projeto,
             "sobra":               layout.sobra == 'S'
         }
+        
+        if hasattr(layout, 'codigo_lote'):
+            plano_de_corte["codigo_lote"] = str(layout.codigo_lote)
 
         logger.info('Cadastrando plano_de_corte %s', layout.codigo_layout)
 

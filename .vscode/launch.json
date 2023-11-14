@@ -22,5 +22,22 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
+        {
+            "name": "Python: tx plano_de_corte gerar_id_unico_projeto",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/tx.py",
+            "args": [
+                "--host", "http://172.16.1.16:6543/",
+                "-u", "admin",
+                "-p", "qwe123",
+                "--verbose",
+                "plano_de_corte",
+                "gerar_id_unico_projeto",
+                "--dst-file", "project_id"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
     ]
 }

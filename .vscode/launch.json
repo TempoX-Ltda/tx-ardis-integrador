@@ -23,7 +23,7 @@
             "justMyCode": true
         },
         {
-            "name": "Python: tx plano_de_corte gerar_id_unico_projeto",
+            "name": "Python: tx plano_de_corte gerar_id_projeto",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/tx.py",
@@ -33,7 +33,7 @@
                 "-p", "qwe123",
                 "--verbose",
                 "plano_de_corte",
-                "gerar_id_unico_projeto",
+                "gerar_id_projeto",
                 "--dst-file", "project_id"
             ],
             "console": "integratedTerminal",

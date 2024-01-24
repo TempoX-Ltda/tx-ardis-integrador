@@ -5,7 +5,7 @@ import tempfile
 
 import PySimpleGUI as sg
 
-from tx_parser import get_tx_parser
+from utils.tx_parser import get_tx_parser
 import plano_de_corte
 
 __version__ = '1.0.2'
@@ -49,7 +49,7 @@ def parse_args(args):
     # https://docs.python.org/3/library/argparse.html#sub-commands
     # https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.set_defaults
     if hasattr(parsed_args, "func"):
-        parsed_args.func(parsed_args)
+        return parsed_args.func(parsed_args)
     else:
         raise SystemExit
 

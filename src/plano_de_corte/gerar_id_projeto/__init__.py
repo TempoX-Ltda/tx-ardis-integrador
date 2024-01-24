@@ -4,14 +4,14 @@ from io import TextIOWrapper
 from argparse import ArgumentParser, FileType
 from typing import Callable, Optional
 
-from tx_parser import TxArgs
+from utils.tx_parser import TxArgs
 
 from utils.tx_sdk import TxSDK
 
 logger = logging.getLogger('tx')
 
 @dataclass
-class GerarIdUnicoProjetoArgs(TxArgs):
+class GerarIdProjetoArgs(TxArgs):
     
     # É a própria função que será executada
     func: Callable
@@ -23,7 +23,7 @@ def add_subparser_to(main_parser: ArgumentParser):
     subparsers = main_parser.add_subparsers()
 
     subparser_gerar_id_projeto = subparsers.add_parser(
-        'gerar_id_unico_projeto'
+        'gerar_id_projeto'
     )
 
     subparser_gerar_id_projeto.add_argument(
@@ -39,7 +39,7 @@ def gerar_id_projeto(args):
 
     logger.debug('Iniciando processo `gerar_id_projeto`')
     
-    args = GerarIdUnicoProjetoArgs(**vars(args))
+    args = GerarIdProjetoArgs(**vars(args))
 
     tx = TxSDK(args.host, args.user, args.password)
 
@@ -55,3 +55,5 @@ def gerar_id_projeto(args):
         logger.debug('Salvo com sucesso no arquivo')
 
     print(id_projeto)
+
+    return id_projeto

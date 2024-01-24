@@ -110,6 +110,45 @@ URL_PLANO_DE_CORTE_PECAS = urljoin(args.host, 'plano-de-corte/{codigo_layout}/pe
 logger.debug('URL_PLANO_DE_CORTE: %s',       URL_PLANO_DE_CORTE)
 logger.debug('URL_PLANO_DE_CORTE_PECAS: %s', URL_PLANO_DE_CORTE_PECAS)
 
+# Cria sessão da API e coleta o token que é utilizado nas futuras requisições
+s = Session()
+
+def get_auth_key():
+
+    try:
+
+        login = s.post(
+            url = urljoin(args.host, 'auth/login'),
+            json= {
+                "user":     args.user,
+                "password": args.password
+            }
+        )
+
+        login.raise_for_status()
+
+        logger.info('Sucesso no Login')
+
+        return login.json().get('retorno').get('key')
+
+    except Exception as exc:
+
+        logger.exception('')
+
+        try:
+            mensagem = exc.response.json().get('mensagem')
+        except Exception:
+            mensagem = 'A API não enviou uma mensagem de erro, verifique os logs.'
+
+        sg.Popup(
+            'Não foi possível se conectar a API',
+            mensagem,
+            f'Log completo em: {log_file}',
+            title='Erro ao conectar a API',
+            button_type=sg.POPUP_BUTTONS_OK
+        )
+
+        raise SystemExit from exc
 
 def envia_layouts(layouts):
     

@@ -162,4 +162,3 @@ cython_debug/
 
 venv*
 !/src/send_ardis.spec
-project_id

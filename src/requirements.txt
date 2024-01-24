@@ -12,3 +12,4 @@ tzdata==2023.3
 urllib3==1.26.15
 pydantic==2.5.3
 ruff
+httpx==0.26.0

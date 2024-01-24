@@ -10,13 +10,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/send_ardis.py",
             "args": [
-                "--host", "http://172.16.1.16:6543/",
+                "--host", "http://192.168.0.209:6543/",
                 "-u", "admin",
                 "-p", "qwe123",
                 "--layouts-file", "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_TESTE.csv",
                 "--parts-file",   "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_TESTE.csv",
                 "--sep", ";",
-                //"--error-on-duplicated-part",
+                "--error-on-duplicated-part",
                 "--figures-directory", "'${workspaceFolder}/Ardis/Figures'"
             ],
             "console": "integratedTerminal",

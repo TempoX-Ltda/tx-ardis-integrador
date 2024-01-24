@@ -7,11 +7,17 @@ import tempfile
 import sys
 import os
 import base64
+from pydantic import ValidationError
 
 from requests import Session
 from requests.exceptions import HTTPError
 from pandas import read_csv
 import PySimpleGUI as sg
+from utils.types import Part
+
+from utils import peca_no_plano_considera_duplicidade
+
+from tx.tx import Tx
 
 __version__ = "1.0.2"
 
@@ -109,38 +115,6 @@ logger.debug("URL_PLANO_DE_CORTE_PECAS: %s", URL_PLANO_DE_CORTE_PECAS)
 
 # Cria sessão da API e coleta o token que é utilizado nas futuras requisições
 s = Session()
-
-
-def get_auth_key():
-    try:
-        login = s.post(
-            url=urljoin(args.host, "auth/login"),
-            json={"user": args.user, "password": args.password},
-        )
-
-        login.raise_for_status()
-
-        logger.info("Sucesso no Login")
-
-        return login.json().get("retorno").get("key")
-
-    except Exception as exc:
-        logger.exception("")
-
-        try:
-            mensagem = exc.response.json().get("mensagem")
-        except Exception:
-            mensagem = "A API não enviou uma mensagem de erro, verifique os logs."
-
-        sg.Popup(
-            "Não foi possível se conectar a API",
-            mensagem,
-            f"Log completo em: {log_file}",
-            title="Erro ao conectar a API",
-            button_type=sg.POPUP_BUTTONS_OK,
-        )
-
-        raise SystemExit from exc
 
 
 def envia_layouts(layouts):
@@ -319,7 +293,7 @@ def envia_pecas(parts):
     sg.one_line_progress_meter_cancel()
 
 
-def verifica_duplicidade_pecas(parts):
+def verifica_duplicidade_pecas(tx: Tx, parts):
     """
     Verifica se já alguma peça já está inserida em algum plano de corte ativo
     """
@@ -337,16 +311,22 @@ def verifica_duplicidade_pecas(parts):
         ):
             break
 
-        # Verifica se o id_unico_peca é um número inteiro
         try:
-            int(part.id_unico_peca)
-        except ValueError as exc:
+            part = Part(
+                codigo_layout=part.codigo_layout,
+                id_ordem=part.id_ordem,
+                id_unico_peca=part.id_unico_peca,
+                qtd_cortada_no_layout=part.qtd_cortada_no_layout,
+                tempo_corte_segundos=part.tempo_corte_segundos,
+            )
+        except ValidationError as exc:
             logger.exception("")
+
             response = sg.Popup(
                 f"Layout: {part.codigo_layout}",
                 f"ID Ordem: {part.id_ordem}",
                 f"ID Único: {part.id_unico_peca}",
-                'O campo "id_unico_peca" não pode ser interpretado como INTEGER.',
+                str(exc),
                 f"id_unico_peca: {part.id_unico_peca}",
                 f"Log completo em: {log_file}",
                 title="Erro",
@@ -355,63 +335,16 @@ def verifica_duplicidade_pecas(parts):
             sg.one_line_progress_meter_cancel()
             raise SystemExit from exc
 
-        # Verifica se o qtd_cortada_no_layout é um número inteiro
         try:
-            int(part.qtd_cortada_no_layout)
-        except ValueError as exc:
-            logger.exception("")
-            response = sg.Popup(
-                f"Layout: {part.codigo_layout}",
-                f"ID Ordem: {part.id_ordem}",
-                f"ID Único: {part.id_unico_peca}",
-                'O campo "qtd_cortada_no_layout" não pode ser interpretado como INTEGER.',
-                f"qtd_cortada_no_layout: {part.qtd_cortada_no_layout}",
-                f"Log completo em: {log_file}",
-                title="Erro",
-                button_type=sg.POPUP_BUTTONS_OK,
+            lista_planos = tx.plano_de_corte.pecas.busca_plano_de_corte_por_peca(
+                part.id_unico_peca
             )
-            sg.one_line_progress_meter_cancel()
-            raise SystemExit from exc
-
-        # Verifica se o tempo_corte_segundos é um número float
-        try:
-            float(part.tempo_corte_segundos)
-        except ValueError as exc:
+        except Exception as err:
             logger.exception("")
-            response = sg.Popup(
-                f"Layout: {part.codigo_layout}",
-                f"ID Ordem: {part.id_ordem}",
-                f"ID Único: {part.id_unico_peca}",
-                'O campo "tempo_corte_segundos" não pode ser interpretado como FLOAT.',
-                f"tempo_corte_segundos: {part.tempo_corte_segundos}",
-                f"Log completo em: {log_file}",
-                title="Erro",
-                button_type=sg.POPUP_BUTTONS_OK,
-            )
-            sg.one_line_progress_meter_cancel()
-            raise SystemExit from exc
-
-        res = s.get(
-            url=urljoin(args.host, f"plano-de-corte/peca/{int(part.id_unico_peca)}"),
-        )
-
-        try:
-            res.raise_for_status()
-        except HTTPError as err:
-            logger.exception("")
-
-            try:
-                mensagem = err.response.json().get("mensagem")
-            except Exception:
-                mensagem = "A API não enviou uma mensagem de erro, verifique os logs."
-
-            logger.error(mensagem)
-
             response = sg.Popup(
                 f"Layout: {part.codigo_layout} \n" f"ID Ordem: {part.id_ordem} \n",
                 f"ID Único: {part.id_unico_peca} \n"
-                "Ocorreu um erro ao consultar essa peça:",
-                mensagem,
+                "Ocorreu um erro ao consultar essa peça",
                 f"Log completo em: {log_file}",
                 "Deseja continuar a conferência das outras peças?",
                 title="Erro ao consultar peças",
@@ -423,37 +356,22 @@ def verifica_duplicidade_pecas(parts):
 
             continue
 
-        planos = res.json().get("retorno")
-
-        if not planos:
+        if not lista_planos:
+            # A peça NÃO está inserida em nenhum plano de corte
             continue
 
-        for plano in planos:
-            if str(plano.get("PlanoDeCorte").get("codigo_layout")).startswith(
-                ("RETR", "ASS")
-            ):
-                # O Plano que ja foi enviado NÃO é um plano de LOTE
-                continue
-
-            if plano.get("PlanoDeCorte").get("inativo") is True:
-                # O Plano que ja foi enviado NÃO está Ativo
-                continue
-
-            if (
-                plano.get("PlanoDeCorte").get("finalizado")
-                is False  # Plano NÃO foi cortado
-                or not str(part.codigo_layout).startswith(
-                    ("RETR", "ASS")
-                )  # O Plano atual é um plano de LOTE
-            ):
+        for plano in lista_planos:
+            if peca_no_plano_considera_duplicidade(plano.PlanoDeCorte, part):
                 response = sg.Popup(
                     f"ID Ordem: {part.id_ordem}",
                     f"ID Único: {part.id_unico_peca} \n"
                     "Essa peça já está inserida no seguinte plano de corte:",
-                    f'{plano.get("PlanoDeCorte").get("codigo_layout")} - {plano.get("PlanoDeCorte").get("nome_projeto")}\n',
-                    "Finalizado: Sim\n"
-                    if plano.get("PlanoDeCorte").get("finalizado") is True
-                    else "Finalizado: Não\n",
+                    f"{plano.PlanoDeCorte.codigo_layout} - {plano.PlanoDeCorte.nome_projeto}\n",
+                    (
+                        "Finalizado: Sim\n"
+                        if plano.PlanoDeCorte.finalizado is True
+                        else "Finalizado: Não\n"
+                    ),
                     "Processo será interrompido!",
                     title="Peça já foi inserida",
                     button_type=sg.POPUP_BUTTONS_OK,
@@ -466,14 +384,26 @@ def verifica_duplicidade_pecas(parts):
 
 
 def main():
-    s.headers["Authorization"] = f"Bearer {get_auth_key()}"
+    try:
+        tx = Tx(args.host, args.user, args.password)
+    except Exception as exc:
+        logger.exception("")
+
+        sg.Popup(
+            "Não foi possível se conectar a API",
+            f"Log completo em: {log_file}",
+            title="Erro ao conectar a API",
+            button_type=sg.POPUP_BUTTONS_OK,
+        )
+
+        raise SystemExit from exc
 
     # Carrega os arquivos
     layouts = read_csv(args.layouts_file, sep=args.sep)
     parts = read_csv(args.parts_file, sep=args.sep)
 
     if args.error_on_duplicated_part:
-        verifica_duplicidade_pecas(parts)
+        verifica_duplicidade_pecas(tx, parts)
 
     envia_layouts(layouts)
 

@@ -197,7 +197,7 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
             tx.plano_de_corte.novo_plano_de_corte(
                 codigo_layout=layout.codigo_layout,
                 codigo_lote=(
-                    layout.codigo_lote if layout.codigo_lote is not None else ""
+                    str(layout.codigo_lote) if layout.codigo_lote is not None else ""
                 ),
                 descricao_material=layout.descricao_material,
                 id_recurso=layout.id_recurso,

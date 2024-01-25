@@ -23,4 +23,4 @@ class PlanoDeCorteFromCsv(BaseModel):
     qtd_chapas: int
     sobra: Literal["S", "N"]
     tempo_estimado_seg: int
-    codigo_lote: Optional[str]
+    codigo_lote: Optional[int]

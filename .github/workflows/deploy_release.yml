@@ -17,10 +17,12 @@ jobs:
     - name: PyInstaller Windows
       # You may pin to the exact commit or the version.
       # uses: JackMcKew/pyinstaller-action-windows@a8dee21ad01bbc7e7363d445bb632691b95ba057
-      uses: GaNiziolek/pyinstaller-action-windows@c1a1d219579ad2bda466359d460f7f602a2d18db
+      uses: GaNiziolek/pyinstaller-action-windows@0ce759f0a343319728a928d8100c93887fd29436
       with:
         # Directory containing source code (optional requirements.txt).
         path: src
+
+        add_data_dirs: utils tx
 
     - name: Add File to release
       uses: softprops/action-gh-release@v1

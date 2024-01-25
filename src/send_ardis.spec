@@ -5,7 +5,7 @@ a = Analysis(
     ['send_ardis.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('utils', 'utils'), ('tx', 'tx')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

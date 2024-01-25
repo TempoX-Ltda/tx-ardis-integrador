@@ -22,8 +22,6 @@ jobs:
         # Directory containing source code (optional requirements.txt).
         path: src
 
-        add_data_dirs: utils tx
-
     - name: Add File to release
       uses: softprops/action-gh-release@v1
       with:

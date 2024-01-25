@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class PlanoDeCorte(BaseModel):
+class PlanoDeCorteModel(BaseModel):
     id: int
     codigo_layout: str
     perc_aproveitamento: float

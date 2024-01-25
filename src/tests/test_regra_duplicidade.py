@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
-from src.utils.types import Part
+from src.utils.types import PartFromCsv
 
 from utils import peca_no_plano_considera_duplicidade
 
-from tx.modules.plano_de_corte.types import PlanoDeCorte
+from tx.modules.plano_de_corte.types import PlanoDeCorteModel
 
-plano_base = PlanoDeCorte(
+plano_base = PlanoDeCorteModel(
     finalizado=False,
     pendente=True,
     em_processo=False,
@@ -40,7 +40,7 @@ plano_base = PlanoDeCorte(
     tempo_trabalhado=None,
 )
 
-part_base = Part(
+part_base = PartFromCsv(
     codigo_layout="4321I54321L21-",
     id_ordem="1234",
     id_unico_peca=1234,

@@ -1,19 +1,18 @@
 from argparse import ArgumentParser
+from math import e
 import pathlib
 import logging
 from logging.handlers import RotatingFileHandler
-from urllib.parse import urljoin
 import tempfile
 import sys
 import os
 import base64
+from httpx import HTTPStatusError
 from pydantic import ValidationError
 
-from requests import Session
-from requests.exceptions import HTTPError
-from pandas import read_csv
+from pandas import DataFrame, read_csv
 import PySimpleGUI as sg
-from utils.types import Part
+from utils.types import PartFromCsv, PlanoDeCorteFromCsv
 
 from utils import peca_no_plano_considera_duplicidade
 
@@ -107,65 +106,9 @@ args = parser.parse_args()
 
 logger.debug("Argumentos: %s", args)
 
-URL_PLANO_DE_CORTE = urljoin(args.host, "plano-de-corte")
-URL_PLANO_DE_CORTE_PECAS = urljoin(args.host, "plano-de-corte/{codigo_layout}/pecas")
 
-logger.debug("URL_PLANO_DE_CORTE: %s", URL_PLANO_DE_CORTE)
-logger.debug("URL_PLANO_DE_CORTE_PECAS: %s", URL_PLANO_DE_CORTE_PECAS)
-
-# Cria sessão da API e coleta o token que é utilizado nas futuras requisições
-s = Session()
-
-
-def envia_layouts(layouts):
-    def envia_layout(layout):
-        plano_de_corte = {
-            "codigo_layout": layout.codigo_layout,
-            "qtd_chapas": layout.qtd_chapas,
-            "perc_aproveitamento": layout.perc_aproveitamento,
-            "perc_sobras": layout.perc_sobras,
-            "tempo_estimado_seg": layout.tempo_estimado_seg,
-            "descricao_material": layout.descricao_material,
-            "id_recurso": layout.id_recurso,
-            "mm_comprimento": layout.mm_comprimento,
-            "mm_largura": layout.mm_largura,
-            "mm_comp_linear": layout.mm_comp_linear,
-            "nome_projeto": layout.nome_projeto,
-            "sobra": layout.sobra == "S",
-        }
-
-        if hasattr(layout, "codigo_lote"):
-            plano_de_corte["codigo_lote"] = str(layout.codigo_lote)
-
-        logger.info("Cadastrando plano_de_corte %s", layout.codigo_layout)
-
-        res = s.post(url=URL_PLANO_DE_CORTE, json=plano_de_corte)
-
-        try:
-            res.raise_for_status()
-        except HTTPError as err:
-            logger.exception("")
-
-            try:
-                mensagem = err.response.json().get("mensagem")
-            except Exception:
-                mensagem = "A API não enviou uma mensagem de erro, verifique os logs."
-
-            logger.error(mensagem)
-
-            sg.Popup(
-                f"Codigo layout: {layout.codigo_layout}",
-                "Ocorreu um erro ao enviar esse layout:",
-                mensagem,
-                f"Log completo em: {log_file}",
-                title="Erro ao enviar Layouts",
-                button_type=sg.POPUP_BUTTONS_OK,
-            )
-
-            sg.one_line_progress_meter_cancel()
-            raise SystemExit from err
-
-    def envia_layout_figure(layout):
+def envia_layouts(tx: Tx, layouts: DataFrame):
+    def envia_layout_figure(layout: PlanoDeCorteFromCsv):
         logger.info("Enviando figure do plano_de_corte %s", layout.codigo_layout)
 
         figure_path = os.path.join(
@@ -182,29 +125,22 @@ def envia_layouts(layouts):
         with open(figure_path, "rb") as figure_img:
             encoded_str = base64.b64encode(figure_img.read())
 
-            res = s.post(
-                url=urljoin(args.host, f"plano-de-corte/{layout.codigo_layout}/figure"),
-                json={"decoded_figure": encoded_str.decode("utf-8")},
-            )
-
             try:
-                res.raise_for_status()
-            except HTTPError as err:
+                tx.plano_de_corte.salvar_imagem_do_plano_de_corte(
+                    layout.codigo_layout, encoded_str
+                )
+            except HTTPStatusError as exc:
                 logger.exception("")
 
                 try:
-                    mensagem = err.response.json().get("mensagem")
+                    message = exc.response.json()["mensagem"]
                 except Exception:
-                    mensagem = (
-                        "A API não enviou uma mensagem de erro, verifique os logs."
-                    )
+                    message = str(exc)
 
-                logger.error(mensagem)
-
-                sg.Popup(
+                _ = sg.Popup(
                     f"Codigo layout: {layout.codigo_layout}",
                     "Ocorreu um erro ao enviar a figure desse layout:",
-                    mensagem,
+                    message,
                     f"Log completo em: {log_file}",
                     title="Erro ao enviar Layouts",
                     button_type=sg.POPUP_BUTTONS_OK,
@@ -226,7 +162,74 @@ def envia_layouts(layouts):
         ):
             break
 
-        envia_layout(layout)
+        try:
+            layout = PlanoDeCorteFromCsv(
+                codigo_layout=layout.codigo_layout,
+                descricao_material=layout.descricao_material,
+                id_recurso=layout.id_recurso,
+                mm_comp_linear=layout.mm_comp_linear,
+                mm_comprimento=layout.mm_comprimento,
+                mm_largura=layout.mm_largura,
+                nome_projeto=layout.nome_projeto,
+                perc_aproveitamento=layout.perc_aproveitamento,
+                perc_sobras=layout.perc_sobras,
+                qtd_chapas=layout.qtd_chapas,
+                sobra=layout.sobra,
+                tempo_estimado_seg=int(layout.tempo_estimado_seg),
+                codigo_lote=(
+                    layout.codigo_lote if hasattr(layout, "codigo_lote") else None
+                ),
+            )
+        except ValidationError as exc:
+            logger.exception("")
+            _ = sg.Popup(
+                f"Layout: {layout.codigo_layout}",
+                str(exc),
+                f"Log completo em: {log_file}",
+                title="Erro",
+                button_type=sg.POPUP_BUTTONS_OK,
+            )
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
+
+        ## Envia o plano
+        try:
+            tx.plano_de_corte.novo_plano_de_corte(
+                codigo_layout=layout.codigo_layout,
+                codigo_lote=(
+                    layout.codigo_lote if layout.codigo_lote is not None else ""
+                ),
+                descricao_material=layout.descricao_material,
+                id_recurso=layout.id_recurso,
+                mm_comp_linear=layout.mm_comp_linear,
+                mm_comprimento=layout.mm_comprimento,
+                mm_largura=layout.mm_largura,
+                nome_projeto=layout.nome_projeto,
+                perc_aproveitamento=layout.perc_aproveitamento,
+                perc_sobras=layout.perc_sobras,
+                qtd_chapas=layout.qtd_chapas,
+                sobra=layout.sobra == "S",
+                tempo_estimado_seg=layout.tempo_estimado_seg,
+            )
+        except HTTPStatusError as exc:
+            logger.exception("")
+
+            try:
+                message = exc.response.json()["mensagem"]
+            except Exception:
+                message = str(exc)
+
+            _ = sg.Popup(
+                f"Codigo layout: {layout.codigo_layout}",
+                "Ocorreu um erro ao enviar esse layout:",
+                message,
+                f"Log completo em: {log_file}",
+                title="Erro ao enviar Layouts",
+                button_type=sg.POPUP_BUTTONS_OK,
+            )
+
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
 
         if args.figures_directory:
             envia_layout_figure(layout)
@@ -234,7 +237,7 @@ def envia_layouts(layouts):
     sg.one_line_progress_meter_cancel()
 
 
-def envia_pecas(parts):
+def envia_pecas(tx: Tx, parts: DataFrame):
     # Envia as pecas
     for row_num, part in enumerate(parts.itertuples(index=True)):
         logger.debug("Enviando peça: %s", part)
@@ -249,36 +252,52 @@ def envia_pecas(parts):
         ):
             break
 
-        peca = {
-            "qtd_cortada_no_layout": int(part.qtd_cortada_no_layout),
-            "id_unico_peca": int(part.id_unico_peca),
-            "tempo_corte_segundos": float(part.tempo_corte_segundos),
-        }
+        try:
+            part = PartFromCsv(
+                codigo_layout=part.codigo_layout,
+                id_ordem=part.id_ordem,
+                id_unico_peca=part.id_unico_peca,
+                qtd_cortada_no_layout=part.qtd_cortada_no_layout,
+                tempo_corte_segundos=part.tempo_corte_segundos,
+            )
+        except ValidationError as exc:
+            logger.exception("")
+
+            _ = sg.Popup(
+                f"Layout: {part.codigo_layout}",
+                f"ID Ordem: {part.id_ordem}",
+                f"ID Único: {part.id_unico_peca}",
+                str(exc),
+                f"id_unico_peca: {part.id_unico_peca}",
+                f"Log completo em: {log_file}",
+                title="Erro ao cadastrar peça",
+                button_type=sg.POPUP_BUTTONS_OK,
+            )
+            sg.one_line_progress_meter_cancel()
+            raise SystemExit from exc
 
         logger.info("Cadastrando Peca %s", int(part.id_unico_peca))
 
-        res = s.post(
-            url=URL_PLANO_DE_CORTE_PECAS.format(codigo_layout=part.codigo_layout),
-            json=peca,
-        )
-
         try:
-            res.raise_for_status()
-        except HTTPError as err:
+            tx.plano_de_corte.pecas.novo_plano_de_corte_peca(
+                codigo_layout=part.codigo_layout,
+                qtd_cortada_no_layout=part.qtd_cortada_no_layout,
+                id_unico_peca=part.id_unico_peca,
+                tempo_corte_segundos=part.tempo_corte_segundos,
+            )
+        except HTTPStatusError as exc:
             logger.exception("")
 
             try:
-                mensagem = err.response.json().get("mensagem")
+                message = exc.response.json()["mensagem"]
             except Exception:
-                mensagem = "A API não enviou uma mensagem de erro, verifique os logs."
-
-            logger.error(mensagem)
+                message = str(exc)
 
             response = sg.Popup(
                 f"Layout: {part.codigo_layout} \n" f"ID Ordem: {part.id_ordem} \n",
                 f"ID Único: {part.id_unico_peca} \n"
                 "Ocorreu um erro ao enviar essa peca:",
-                mensagem,
+                message,
                 f"Log completo em: {log_file}",
                 "Deseja continuar o envio das outras peças?",
                 title="Erro ao enviar peças",
@@ -286,14 +305,14 @@ def envia_pecas(parts):
             )
             if response == "No" or not response:
                 sg.one_line_progress_meter_cancel()
-                raise SystemExit from err
+                raise SystemExit from exc
         else:
             logger.debug("ok")
 
     sg.one_line_progress_meter_cancel()
 
 
-def verifica_duplicidade_pecas(tx: Tx, parts):
+def verifica_duplicidade_pecas(tx: Tx, parts: DataFrame):
     """
     Verifica se já alguma peça já está inserida em algum plano de corte ativo
     """
@@ -312,7 +331,7 @@ def verifica_duplicidade_pecas(tx: Tx, parts):
             break
 
         try:
-            part = Part(
+            part = PartFromCsv(
                 codigo_layout=part.codigo_layout,
                 id_ordem=part.id_ordem,
                 id_unico_peca=part.id_unico_peca,
@@ -322,7 +341,7 @@ def verifica_duplicidade_pecas(tx: Tx, parts):
         except ValidationError as exc:
             logger.exception("")
 
-            response = sg.Popup(
+            _ = sg.Popup(
                 f"Layout: {part.codigo_layout}",
                 f"ID Ordem: {part.id_ordem}",
                 f"ID Único: {part.id_unico_peca}",
@@ -339,12 +358,19 @@ def verifica_duplicidade_pecas(tx: Tx, parts):
             lista_planos = tx.plano_de_corte.pecas.busca_plano_de_corte_por_peca(
                 part.id_unico_peca
             )
-        except Exception as err:
+        except HTTPStatusError as exc:
             logger.exception("")
+
+            try:
+                message = exc.response.json()["mensagem"]
+            except Exception:
+                message = str(exc)
+
             response = sg.Popup(
                 f"Layout: {part.codigo_layout} \n" f"ID Ordem: {part.id_ordem} \n",
                 f"ID Único: {part.id_unico_peca} \n"
                 "Ocorreu um erro ao consultar essa peça",
+                message,
                 f"Log completo em: {log_file}",
                 "Deseja continuar a conferência das outras peças?",
                 title="Erro ao consultar peças",
@@ -352,7 +378,7 @@ def verifica_duplicidade_pecas(tx: Tx, parts):
             )
             if response == "No" or not response:
                 sg.one_line_progress_meter_cancel()
-                raise SystemExit from err
+                raise SystemExit from exc
 
             continue
 
@@ -362,7 +388,7 @@ def verifica_duplicidade_pecas(tx: Tx, parts):
 
         for plano in lista_planos:
             if peca_no_plano_considera_duplicidade(plano.PlanoDeCorte, part):
-                response = sg.Popup(
+                _ = sg.Popup(
                     f"ID Ordem: {part.id_ordem}",
                     f"ID Único: {part.id_unico_peca} \n"
                     "Essa peça já está inserida no seguinte plano de corte:",
@@ -389,7 +415,7 @@ def main():
     except Exception as exc:
         logger.exception("")
 
-        sg.Popup(
+        _ = sg.Popup(
             "Não foi possível se conectar a API",
             f"Log completo em: {log_file}",
             title="Erro ao conectar a API",
@@ -405,11 +431,11 @@ def main():
     if args.error_on_duplicated_part:
         verifica_duplicidade_pecas(tx, parts)
 
-    envia_layouts(layouts)
+    envia_layouts(tx, layouts)
 
-    envia_pecas(parts)
+    envia_pecas(tx, parts)
 
-    sg.Popup(
+    _ = sg.Popup(
         "Envio finalizado!",
         f"Log completo em: {log_file}",
         "Essa mensagem irá fechar automaticamente em 5 segundos.",
@@ -426,7 +452,7 @@ if __name__ == "__main__":
     except Exception as exc:
         logger.exception("")
 
-        sg.Popup(
+        _ = sg.Popup(
             "Ocorreu um erro não esperado",
             str(exc),
             f"Log completo em: {log_file}",

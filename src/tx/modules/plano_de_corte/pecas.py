@@ -2,7 +2,7 @@ from httpx import Client
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from .types import PlanoDeCorte
+from .types import PlanoDeCorteModel
 
 from ...utils.commons import SuccessResponse
 
@@ -22,7 +22,7 @@ class PlanoDeCortePecas(BaseModel):
 
 class Return(BaseModel):
     PlanoDeCortePecas: PlanoDeCortePecas
-    PlanoDeCorte: PlanoDeCorte
+    PlanoDeCorte: PlanoDeCorteModel
 
 
 class Pecas:
@@ -39,3 +39,21 @@ class Pecas:
         response.raise_for_status()
 
         return SuccessResponse[List[Return]](**response.json()).retorno
+
+    def novo_plano_de_corte_peca(
+        self,
+        codigo_layout: str,
+        qtd_cortada_no_layout: int,
+        id_unico_peca: int,
+        tempo_corte_segundos: float,
+    ):
+        response = self.client.post(
+            f"/plano-de-corte/{codigo_layout}/pecas",
+            json={
+                "qtd_cortada_no_layout": qtd_cortada_no_layout,
+                "id_unico_peca": id_unico_peca,
+                "tempo_corte_segundos": tempo_corte_segundos,
+            },
+        )
+
+        response.raise_for_status()

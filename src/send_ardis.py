@@ -177,7 +177,7 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
                 sobra=layout.sobra,
                 tempo_estimado_seg=int(layout.tempo_estimado_seg),
                 codigo_lote=(
-                    layout.codigo_lote if hasattr(layout, "codigo_lote") else None
+                    str(layout.codigo_lote) if hasattr(layout, "codigo_lote") else None
                 ),
             )
         except ValidationError as exc:
@@ -197,7 +197,7 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
             tx.plano_de_corte.novo_plano_de_corte(
                 codigo_layout=layout.codigo_layout,
                 codigo_lote=(
-                    str(layout.codigo_lote) if layout.codigo_lote is not None else ""
+                    layout.codigo_lote if layout.codigo_lote is not None else ""
                 ),
                 descricao_material=layout.descricao_material,
                 id_recurso=layout.id_recurso,

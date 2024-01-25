@@ -17,7 +17,7 @@ jobs:
     - name: PyInstaller Windows
       # You may pin to the exact commit or the version.
       # uses: JackMcKew/pyinstaller-action-windows@a8dee21ad01bbc7e7363d445bb632691b95ba057
-      uses: JackMcKew/pyinstaller-action-windows@python3-10-pyinstaller-5-3
+      uses: GaNiziolek/pyinstaller-action-windows@2b9cb332b6b2ab7c47890dd7489d84ede9f38216
       with:
         # Directory containing source code (optional requirements.txt).
         path: src

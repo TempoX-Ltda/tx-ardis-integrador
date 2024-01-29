@@ -19,9 +19,9 @@ class PlanoDeCorteModel(BaseModel):
     qtd_chapas: int
     inativo: bool
     id_recurso: int
-    mm_comprimento: int
-    mm_largura: int
-    mm_comp_linear: int
+    mm_comprimento: float
+    mm_largura: float
+    mm_comp_linear: float
     id_projeto: Optional[int]
     nome_projeto: str
     codigo_lote: str

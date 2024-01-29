@@ -14,9 +14,9 @@ class PlanoDeCorteFromCsv(BaseModel):
     codigo_layout: str
     descricao_material: str
     id_recurso: int
-    mm_comp_linear: int
-    mm_comprimento: int
-    mm_largura: int
+    mm_comp_linear: float
+    mm_comprimento: float
+    mm_largura: float
     nome_projeto: str
     perc_aproveitamento: float
     perc_sobras: float

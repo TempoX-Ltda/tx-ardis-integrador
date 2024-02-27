@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from math import e
 import pathlib
 import logging
 from logging.handlers import RotatingFileHandler
@@ -8,6 +7,7 @@ import sys
 import os
 import base64
 from httpx import HTTPStatusError
+from httpx import Timeout
 from pydantic import ValidationError
 
 from pandas import DataFrame, read_csv
@@ -18,7 +18,7 @@ from utils import peca_no_plano_considera_duplicidade
 
 from tx.tx import Tx
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 sg.theme("Dark Blue 3")
 
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 file_log_handler = RotatingFileHandler(
-    log_file, maxBytes=5 * 1024 * 1024, backupCount=2
+    log_file, maxBytes=50 * 1024 * 1024, backupCount=2
 )
 file_log_handler.setLevel(logging.DEBUG)
 file_log_handler.setFormatter(formatter)
@@ -100,6 +100,13 @@ parser.add_argument(
     "--figures-directory",
     type=pathlib.Path,
     help="Diretório onde as figures de cada plano serão buscadas. O nome de cada arquivo deve ser igual ao código do plano, com extensão .png",
+)
+
+parser.add_argument(
+    "--timeout",
+    type=float,
+    help="Tempo limite para as requisições HTTP, em segundos.",
+    default=30.0,
 )
 
 args = parser.parse_args()
@@ -175,7 +182,7 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
                 perc_sobras=layout.perc_sobras,
                 qtd_chapas=layout.qtd_chapas,
                 sobra=layout.sobra,
-                tempo_estimado_seg=int(layout.tempo_estimado_seg),
+                tempo_estimado_seg=int(layout.tempo_estimado_seg),  # type: ignore
                 codigo_lote=(
                     str(layout.codigo_lote) if hasattr(layout, "codigo_lote") else None
                 ),
@@ -254,9 +261,9 @@ def envia_pecas(tx: Tx, parts: DataFrame):
 
         try:
             part = PartFromCsv(
-                codigo_layout=part.codigo_layout,
-                id_ordem=part.id_ordem,
-                id_unico_peca=part.id_unico_peca,
+                codigo_layout=str(part.codigo_layout),
+                id_ordem=str(part.id_ordem),
+                id_unico_peca=int(part.id_unico_peca),  # type: ignore
                 qtd_cortada_no_layout=part.qtd_cortada_no_layout,
                 tempo_corte_segundos=part.tempo_corte_segundos,
             )
@@ -332,9 +339,9 @@ def verifica_duplicidade_pecas(tx: Tx, parts: DataFrame):
 
         try:
             part = PartFromCsv(
-                codigo_layout=part.codigo_layout,
-                id_ordem=part.id_ordem,
-                id_unico_peca=part.id_unico_peca,
+                codigo_layout=str(part.codigo_layout),
+                id_ordem=str(part.id_ordem),
+                id_unico_peca=int(part.id_unico_peca),  # type: ignore
                 qtd_cortada_no_layout=part.qtd_cortada_no_layout,
                 tempo_corte_segundos=part.tempo_corte_segundos,
             )
@@ -411,7 +418,13 @@ def verifica_duplicidade_pecas(tx: Tx, parts: DataFrame):
 
 def main():
     try:
-        tx = Tx(args.host, args.user, args.password)
+        tx = Tx(
+            base_url=args.host,
+            user=args.user,
+            password=args.password,
+            user_agent="send_ardis/" + __version__,
+            default_timeout=Timeout(args.timeout),
+        )
     except Exception as exc:
         logger.exception("")
 

@@ -13,5 +13,5 @@ class Metadata(BaseModel):
 class SuccessResponse(BaseModel, Generic[DataT]):
     sucesso: bool
     mensagem: str
-    metadata: Metadata
+    metadata: Optional[Metadata]
     retorno: DataT

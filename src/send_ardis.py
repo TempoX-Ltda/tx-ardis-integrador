@@ -18,7 +18,7 @@ from utils import peca_no_plano_considera_duplicidade
 
 from tx.tx import Tx
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 sg.theme("Dark Blue 3")
 

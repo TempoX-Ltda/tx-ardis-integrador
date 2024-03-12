@@ -18,7 +18,7 @@ from utils import peca_no_plano_considera_duplicidade
 
 from tx.tx import Tx
 
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 
 sg.theme("Dark Blue 3")
 
@@ -106,7 +106,7 @@ parser.add_argument(
     "--timeout",
     type=float,
     help="Tempo limite para as requisições HTTP, em segundos.",
-    default=30.0,
+    default=None,
 )
 
 args = parser.parse_args()
@@ -394,15 +394,15 @@ def verifica_duplicidade_pecas(tx: Tx, parts: DataFrame):
             continue
 
         for plano in lista_planos:
-            if peca_no_plano_considera_duplicidade(plano.PlanoDeCorte, part):
+            if peca_no_plano_considera_duplicidade(plano, part):
                 _ = sg.Popup(
                     f"ID Ordem: {part.id_ordem}",
                     f"ID Único: {part.id_unico_peca} \n"
                     "Essa peça já está inserida no seguinte plano de corte:",
-                    f"{plano.PlanoDeCorte.codigo_layout} - {plano.PlanoDeCorte.nome_projeto}\n",
+                    f"{plano.codigo_layout} - {plano.nome_projeto}\n",
                     (
                         "Finalizado: Sim\n"
-                        if plano.PlanoDeCorte.finalizado is True
+                        if plano.finalizado is True
                         else "Finalizado: Não\n"
                     ),
                     "Processo será interrompido!",

@@ -1,8 +1,8 @@
-from tx.modules.plano_de_corte.types import PlanoDeCorteModel
+from tx.modules.plano_de_corte.pecas import PlanoDeCortePecas
 from utils.types import PartFromCsv
 
 
-def peca_no_plano_considera_duplicidade(plano: PlanoDeCorteModel, peca: PartFromCsv):
+def peca_no_plano_considera_duplicidade(plano: PlanoDeCortePecas, peca: PartFromCsv):
     if peca.codigo_layout.startswith(("RETR", "ASS")):
         # O novo plano que está sendo enviado é de Retrabalho ou assistência
         return False

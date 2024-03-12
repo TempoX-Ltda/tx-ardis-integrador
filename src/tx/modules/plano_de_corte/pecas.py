@@ -2,27 +2,42 @@ from httpx import Client
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from .types import PlanoDeCorteModel
 
 from ...utils.commons import SuccessResponse
 
 
 class PlanoDeCortePecas(BaseModel):
-    id: int
-    codigo_layout: str
-    tempo_corte_segundos: float
-    qtd_cortada_no_layout: int
-    qtd_retrabalho: Optional[int]
     created_on: datetime
     modified_on: datetime
-    id_unico_peca: int
+    id: int
+    codigo_layout: str
+    id_recurso: int
+    id_unico_peca: Optional[int]
+    tempo_corte_segundos: Optional[float]
+    qtd_cortada_no_layout: int
     conferido: bool
     data_conferencia: Optional[datetime]
-
-
-class Return(BaseModel):
-    PlanoDeCortePecas: PlanoDeCortePecas
-    PlanoDeCorte: PlanoDeCorteModel
+    nome_projeto: str
+    descricao_material: str
+    inativo: bool
+    pendente: bool
+    finalizado: bool
+    em_processo: bool
+    inicio_apontamento: Optional[datetime]
+    fim_apontamento: Optional[datetime]
+    id_ordem: Optional[int]
+    item_codigo: Optional[str]
+    item_descricao: Optional[str]
+    item_mascara: Optional[str]
+    item_mascara_descricao: Optional[str]
+    mm_comprimento: Optional[float]
+    mm_largura: Optional[float]
+    mm_espessura: Optional[float]
+    quantidade_ordem: Optional[int]
+    codigo_lote: Optional[str]
+    kg_peso_liquido: Optional[float]
+    kg_peso_bruto: Optional[float]
+    cancelada: Optional[bool]
 
 
 class Pecas:
@@ -34,11 +49,13 @@ class Pecas:
         Retorna todos os planos de corte que contém a peça com o id único informado
         """
 
-        response = self.client.get(f"/plano-de-corte/peca/{id_unico_peca}")
+        response = self.client.get(
+            "/plano-de-corte/pecas", params={"id_unico_peca": id_unico_peca}
+        )
 
         response.raise_for_status()
 
-        return SuccessResponse[List[Return]](**response.json()).retorno
+        return SuccessResponse[List[PlanoDeCortePecas]](**response.json()).retorno
 
     def novo_plano_de_corte_peca(
         self,

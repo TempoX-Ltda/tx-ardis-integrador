@@ -12,13 +12,14 @@ from pydantic import ValidationError
 
 from pandas import DataFrame, read_csv
 import PySimpleGUI as sg
+from tx.modules.plano_de_corte.types import TipoMateriaPrima
 from utils.types import PartFromCsv, PlanoDeCorteFromCsv
 
 from utils import peca_no_plano_considera_duplicidade
 
 from tx.tx import Tx
 
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 
 sg.theme("Dark Blue 3")
 
@@ -201,6 +202,14 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
 
         ## Envia o plano
         try:
+            tipo = TipoMateriaPrima.chapa
+
+            if layout.sobra == "S":
+                tipo = TipoMateriaPrima.sobra
+
+            if layout.codigo_layout.startswith("RECO"):
+                tipo = TipoMateriaPrima.recorte
+
             tx.plano_de_corte.novo_plano_de_corte(
                 codigo_layout=layout.codigo_layout,
                 codigo_lote=(
@@ -215,7 +224,7 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
                 perc_aproveitamento=layout.perc_aproveitamento,
                 perc_sobras=layout.perc_sobras,
                 qtd_chapas=layout.qtd_chapas,
-                sobra=layout.sobra == "S",
+                tipo=tipo,
                 tempo_estimado_seg=layout.tempo_estimado_seg,
             )
         except HTTPStatusError as exc:

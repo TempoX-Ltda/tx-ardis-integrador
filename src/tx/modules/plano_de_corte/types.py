@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 from pydantic import BaseModel
 
@@ -36,3 +37,9 @@ class PlanoDeCorteModel(BaseModel):
     em_processo: bool
     finalizado: bool
     tempo_bruto: Optional[str]
+
+
+class TipoMateriaPrima(str, Enum):
+    chapa = "chapa"
+    sobra = "sobra"
+    recorte = "recorte"

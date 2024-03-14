@@ -1,5 +1,6 @@
+from typing import Optional
 from httpx import Client
-from tx.modules.plano_de_corte.types import PlanoDeCorteModel, TipoMateriaPrima
+from tx.modules.plano_de_corte.types import TipoMateriaPrima
 
 from tx.utils.commons import SuccessResponse
 
@@ -27,24 +28,30 @@ class PlanoDeCorte:
         mm_comprimento: float,
         mm_largura: float,
         tempo_estimado_seg: int,
+        codigo_layout_pai: Optional[str] = None,
     ):
+        body = {
+            "mm_largura": mm_largura,
+            "tempo_estimado_seg": tempo_estimado_seg,
+            "id_recurso": id_recurso,
+            "perc_aproveitamento": perc_aproveitamento,
+            "mm_comprimento": mm_comprimento,
+            "nome_projeto": nome_projeto,
+            "codigo_layout": codigo_layout,
+            "perc_sobras": perc_sobras,
+            "tipo": tipo,
+            "codigo_lote": codigo_lote,
+            "qtd_chapas": qtd_chapas,
+            "mm_comp_linear": mm_comp_linear,
+            "descricao_material": descricao_material,
+        }
+
+        if codigo_layout_pai is not None:
+            body["codigo_layout_pai"] = codigo_layout_pai
+
         response = self.client.post(
             "/plano-de-corte",
-            json={
-                "mm_largura": mm_largura,
-                "tempo_estimado_seg": tempo_estimado_seg,
-                "id_recurso": id_recurso,
-                "perc_aproveitamento": perc_aproveitamento,
-                "mm_comprimento": mm_comprimento,
-                "nome_projeto": nome_projeto,
-                "codigo_layout": codigo_layout,
-                "perc_sobras": perc_sobras,
-                "tipo": tipo,
-                "codigo_lote": codigo_lote,
-                "qtd_chapas": qtd_chapas,
-                "mm_comp_linear": mm_comp_linear,
-                "descricao_material": descricao_material,
-            },
+            json=body,
         )
 
         response.raise_for_status()

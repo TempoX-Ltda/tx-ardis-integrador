@@ -6,6 +6,7 @@ import tempfile
 import sys
 import os
 import base64
+from typing import Optional
 from httpx import HTTPStatusError
 from httpx import Timeout
 from pydantic import ValidationError
@@ -19,7 +20,7 @@ from utils import peca_no_plano_considera_duplicidade
 
 from tx.tx import Tx
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 sg.theme("Dark Blue 3")
 
@@ -115,7 +116,7 @@ args = parser.parse_args()
 logger.debug("Argumentos: %s", args)
 
 
-def envia_layouts(tx: Tx, layouts: DataFrame):
+def envia_layouts(tx: Tx, layouts: DataFrame, parts: DataFrame):
     def envia_layout_figure(layout: PlanoDeCorteFromCsv):
         logger.info("Enviando figure do plano_de_corte %s", layout.codigo_layout)
 
@@ -200,6 +201,13 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
             sg.one_line_progress_meter_cancel()
             raise SystemExit from exc
 
+        try:
+            codigo_layout_pai: Optional[str] = parts.loc[
+                parts["codigo_layout"] == layout.codigo_layout
+            ].at[0, "codigo_layout_pai"]
+        except KeyError:
+            codigo_layout_pai = None
+
         ## Envia o plano
         try:
             tipo = TipoMateriaPrima.chapa
@@ -226,6 +234,7 @@ def envia_layouts(tx: Tx, layouts: DataFrame):
                 qtd_chapas=layout.qtd_chapas,
                 tipo=tipo,
                 tempo_estimado_seg=layout.tempo_estimado_seg,
+                codigo_layout_pai=codigo_layout_pai,
             )
         except HTTPStatusError as exc:
             logger.exception("")
@@ -453,7 +462,7 @@ def main():
     if args.error_on_duplicated_part:
         verifica_duplicidade_pecas(tx, parts)
 
-    envia_layouts(tx, layouts)
+    envia_layouts(tx, layouts, parts)
 
     envia_pecas(tx, parts)
 

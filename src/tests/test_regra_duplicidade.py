@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from src.utils.types import PartFromCsv
+from src.utils.types import PecaCSV
 
 from utils import peca_no_plano_considera_duplicidade
 
@@ -40,7 +40,7 @@ plano_base = PlanoDeCorteModel(
     tempo_trabalhado=None,
 )
 
-part_base = PartFromCsv(
+part_base = PecaCSV(
     codigo_layout="4321I54321L21-",
     id_ordem="1234",
     id_unico_peca=1234,

@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
-from pydantic import BaseModel
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
 
 class PlanoDeCorteModel(BaseModel):
@@ -43,3 +43,28 @@ class TipoMateriaPrima(str, Enum):
     chapa = "chapa"
     sobra = "sobra"
     recorte = "recorte"
+
+
+class PlanoDeCortePecasCreateModel(BaseModel):
+    codigo_layout: str
+    qtd_cortada_no_layout: int
+    id_unico_peca: int
+    tempo_corte_segundos: float
+
+
+class PlanoDeCorteCreateModel(BaseModel):
+    codigo_layout: str
+    descricao_material: str
+    id_recurso: int
+    mm_comp_linear: float
+    mm_comprimento: float
+    mm_largura: float
+    nome_projeto: str
+    perc_aproveitamento: float
+    perc_sobras: float
+    tipo: TipoMateriaPrima
+    codigo_lote: str
+    qtd_chapas: int
+    tempo_estimado_seg: float
+    figure: Optional[str] = Field(None)
+    pecas: Optional[List[PlanoDeCortePecasCreateModel]] = Field([])

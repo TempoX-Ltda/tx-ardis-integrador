@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 from httpx import Client
-from tx.modules.plano_de_corte.types import TipoMateriaPrima
+from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, TipoMateriaPrima
 
 from tx.utils.commons import SuccessResponse
 
@@ -12,6 +12,23 @@ class PlanoDeCorte:
         self.client = client
 
         self.pecas = Pecas(self.client)
+
+    def novo_projeto(
+            self,
+            planos: List[PlanoDeCorteCreateModel],
+    ):
+        body = {
+            "planos": [plano.model_dump() for plano in planos]
+        }
+
+        response = self.client.post(
+            "/plano-de-corte/projeto",
+            json=body,
+        )
+
+        response.raise_for_status()
+
+        return SuccessResponse(**response.json()).retorno
 
     def novo_plano_de_corte(
         self,

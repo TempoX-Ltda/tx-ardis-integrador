@@ -134,11 +134,6 @@ def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCreateModel):
     if not os.path.exists(figure_path):
         logger.warning('O arquivo "%s" não foi encontrado', figure_path)
 
-        show_error_popup(
-            f"Erro ao carregar figure do layout {plano.codigo_layout}",
-            FileNotFoundError(f"O arquivo {figure_path} não foi encontrado"),
-        )
-
         return None
 
     with open(figure_path, "rb") as figure_img:

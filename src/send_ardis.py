@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 file_log_handler = RotatingFileHandler(
-    log_file, maxBytes=50 * 1024 * 1024, backupCount=2
+    log_file, maxBytes=100 * 1024 * 1024, backupCount=2
 )
 file_log_handler.setLevel(logging.DEBUG)
 file_log_handler.setFormatter(formatter)

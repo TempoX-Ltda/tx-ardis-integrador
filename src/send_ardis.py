@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 import tempfile
 import sys
 from typing import List
-from httpx import Timeout
+from httpx import HTTPStatusError, Timeout
 from pydantic import ValidationError
 
 from pandas import read_csv
@@ -225,10 +225,17 @@ def main():
     except Exception as exc:
         logger.exception("")
 
-        show_error_popup(
-            "Erro ao enviar dados para a API",
-            exc
-        )
+        message = "Erro ao enviar dados para a API"
+
+        if isinstance(exc, HTTPStatusError):
+
+            response = exc.response.json()
+
+            server_message = response.get("mensagem", "")
+
+            message = f"Erro {exc.response.status_code} ao enviar dados para a API\n\n{server_message}"
+
+        show_error_popup(message, exc)
 
         raise SystemExit from exc
 

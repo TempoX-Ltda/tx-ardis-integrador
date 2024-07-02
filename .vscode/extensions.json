@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "charliermarsh.ruff",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "mhutchie.git-graph"
     ]
 }

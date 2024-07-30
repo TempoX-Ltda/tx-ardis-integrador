@@ -46,9 +46,9 @@ class TipoMateriaPrima(str, Enum):
 
 
 class PlanoDeCortePecasCreateModel(BaseModel):
-    codigo_layout: str
     qtd_cortada_no_layout: int
-    id_unico_peca: int
+    id_unico_peca: Optional[int]
+    id_ordem: Optional[int]
     tempo_corte_segundos: float
 
 
@@ -67,4 +67,4 @@ class PlanoDeCorteCreateModel(BaseModel):
     qtd_chapas: int
     tempo_estimado_seg: float
     figure: Optional[str] = Field(None)
-    pecas: Optional[List[PlanoDeCortePecasCreateModel]] = Field([])
+    pecas: List[PlanoDeCortePecasCreateModel] = Field([])

@@ -1,5 +1,6 @@
 from argparse import ArgumentParser, Namespace
 import base64
+import json
 import os
 import pathlib
 import logging
@@ -12,11 +13,12 @@ from pydantic import ValidationError
 
 from pandas import read_csv
 import PySimpleGUI as sg
+from utils import PlanoDeCorteCsvModel, PlanoDeCortePecasCsvModel
 from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, PlanoDeCortePecasCreateModel
 
 from tx.tx import Tx
 
-__version__ = "1.0.8"
+__version__ = "2.0.0"
 
 sg.theme("Dark Blue 3")
 
@@ -122,7 +124,7 @@ def show_error_popup(msg: str, exc: Exception):
     )
 
 
-def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCreateModel):
+def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCsvModel):
 
     figure_path = os.path.join(
         str(args.figures_directory)
@@ -148,13 +150,13 @@ def parse_files(args: Namespace):
     logger.debug("Layouts: %s", layouts_df)
     logger.debug("Parts: %s", parts_df)
 
-    pecas: List[PlanoDeCortePecasCreateModel] = []
+    pecas: List[PlanoDeCortePecasCsvModel] = []
     planos: List[PlanoDeCorteCreateModel] = []
 
     for idx, row in parts_df.iterrows():
 
         try:
-            peca = PlanoDeCortePecasCreateModel.model_validate(row.to_dict())
+            peca = PlanoDeCortePecasCsvModel.model_validate(row.to_dict())
             pecas.append(peca)
 
         except ValidationError as exc:
@@ -170,7 +172,7 @@ def parse_files(args: Namespace):
     for idx, row in layouts_df.iterrows():
 
         try:
-            plano = PlanoDeCorteCreateModel.model_validate(row.to_dict())
+            row = PlanoDeCorteCsvModel.model_validate(row.to_dict())
 
         except ValidationError as exc:
             logger.exception("")
@@ -182,11 +184,30 @@ def parse_files(args: Namespace):
 
             raise SystemExit from exc
 
-        plano.figure = get_figure_for_layout(args, plano)
-
-        plano.pecas = [
-            peca for peca in pecas if peca.codigo_layout == plano.codigo_layout
-        ]
+        plano = PlanoDeCorteCreateModel(
+            codigo_layout=row.codigo_layout,
+            codigo_lote=row.codigo_lote,
+            descricao_material=row.descricao_material,
+            id_recurso=row.id_recurso,
+            mm_comp_linear=row.mm_comp_linear,
+            mm_comprimento=row.mm_comprimento,
+            mm_largura=row.mm_largura,
+            nome_projeto=row.nome_projeto,
+            perc_aproveitamento=row.perc_aproveitamento,
+            perc_sobras=row.perc_sobras,
+            qtd_chapas=row.qtd_chapas,
+            tempo_estimado_seg=row.tempo_estimado_seg,
+            tipo=row.tipo,
+            figure=get_figure_for_layout(args, row),
+            pecas=[
+                PlanoDeCortePecasCreateModel(
+                    qtd_cortada_no_layout=peca.qtd_cortada_no_layout,
+                    id_unico_peca=peca.id_unico_peca,
+                    id_ordem=peca.id_ordem,
+                    tempo_corte_segundos=peca.tempo_corte_segundos,
+                ) for peca in pecas if peca.codigo_layout == row.codigo_layout
+            ]
+        )
 
         planos.append(plano)
 
@@ -226,7 +247,7 @@ def main():
 
             response = exc.response.json()
 
-            server_message = response.get("mensagem", "")
+            server_message = response.get("mensagem") or json.dumps(response)
 
             message = f"Erro {exc.response.status_code} ao enviar dados para a API\n\n{server_message}"
 

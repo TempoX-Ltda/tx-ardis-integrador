@@ -9,7 +9,8 @@ import tempfile
 import sys
 from typing import List
 from httpx import HTTPStatusError, Timeout
-from pydantic import ConfigDict, ValidationError
+import numpy as np
+from pydantic import ConfigDict, ValidationError, validator
 from typing import Optional
 from pydantic import BaseModel
 
@@ -19,7 +20,7 @@ from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, PlanoDeCort
 
 from tx.tx import Tx
 
-__version__ = "2.0.3"
+__version__ = "2.0.4"
 
 sg.theme("Dark Blue 3")
 
@@ -124,6 +125,14 @@ class PlanoDeCortePecasCsvModel(BaseModel):
     id_unico_peca: Optional[int]
     id_ordem: Optional[int]
     tempo_corte_segundos: float
+
+    # Custom validator here
+    @validator('id_unico_peca', 'id_ordem', pre=True)
+    def allow_none(cls, v):
+        if v is None or np.isnan(v):
+            return None
+        else:
+            return v
 
 
 class PlanoDeCorteCsvModel(BaseModel):

@@ -9,7 +9,7 @@ import tempfile
 import sys
 from typing import List
 from httpx import HTTPStatusError, Timeout
-from pydantic import ValidationError
+from pydantic import ConfigDict, ValidationError
 from typing import Optional
 from pydantic import BaseModel
 
@@ -19,7 +19,7 @@ from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, PlanoDeCort
 
 from tx.tx import Tx
 
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 
 sg.theme("Dark Blue 3")
 
@@ -116,6 +116,9 @@ logger.debug("Argumentos: %s", args)
 
 
 class PlanoDeCortePecasCsvModel(BaseModel):
+    # https://docs.pydantic.dev/latest/api/config/#pydantic.config.ConfigDict.coerce_numbers_to_str
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     codigo_layout: str
     qtd_cortada_no_layout: int
     id_unico_peca: Optional[int]
@@ -124,6 +127,9 @@ class PlanoDeCortePecasCsvModel(BaseModel):
 
 
 class PlanoDeCorteCsvModel(BaseModel):
+    # https://docs.pydantic.dev/latest/api/config/#pydantic.config.ConfigDict.coerce_numbers_to_str
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     codigo_layout: str
     descricao_material: str
     id_recurso: int

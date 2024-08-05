@@ -1,17 +1,18 @@
 from argparse import ArgumentParser, Namespace
 import base64
 import json
+from math import isnan
 import os
 import pathlib
 import logging
 from logging.handlers import RotatingFileHandler
 import tempfile
 import sys
-from typing import List
+from typing import Any, List, Optional
+from typing_extensions import Annotated
 from httpx import HTTPStatusError, Timeout
-import numpy as np
-from pydantic import ConfigDict, ValidationError, validator
-from typing import Optional
+from pydantic import BeforeValidator, ConfigDict, ValidationError, model_validator
+
 from pydantic import BaseModel
 
 from pandas import read_csv
@@ -116,23 +117,42 @@ args = parser.parse_args()
 logger.debug("Argumentos: %s", args)
 
 
+def coerce_nan_to_none(x: Any) -> Any:
+
+    try:
+        if isnan(x):
+            return None
+    except TypeError as exc:
+        logger.exception("")
+
+        raise ValueError(f"Erro ao converter {x} para None") from exc
+
+    return x
+
+
 class PlanoDeCortePecasCsvModel(BaseModel):
     # https://docs.pydantic.dev/latest/api/config/#pydantic.config.ConfigDict.coerce_numbers_to_str
     model_config = ConfigDict(coerce_numbers_to_str=True)
 
+    id_ordem: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
+    id_unico_peca: Annotated[Optional[int],
+                             BeforeValidator(coerce_nan_to_none)]
     codigo_layout: str
     qtd_cortada_no_layout: int
-    id_unico_peca: Optional[int]
-    id_ordem: Optional[int]
     tempo_corte_segundos: float
 
-    # Custom validator here
-    @validator('id_unico_peca', 'id_ordem', pre=True)
-    def allow_none(cls, v):
-        if v is None or np.isnan(v):
-            return None
-        else:
-            return v
+    # Se `recorte` for true, a peça será considerada como recorte
+    # nesse caso `id_ordem` e `id_unico_peca` podem ser None
+    recorte: bool
+
+    @model_validator(mode="after")
+    def verifica_recorte(self):
+        if self.recorte:
+            if self.id_ordem is not None or self.id_unico_peca is not None:
+                raise ValueError(
+                    "Peça de recorte não deve ter id_ordem ou id_unico_peca")
+
+        return self
 
 
 class PlanoDeCorteCsvModel(BaseModel):
@@ -194,7 +214,6 @@ def parse_files(args: Namespace):
     planos: List[PlanoDeCorteCreateModel] = []
 
     for idx, row in parts_df.iterrows():
-
         try:
             peca = PlanoDeCortePecasCsvModel.model_validate(row.to_dict())
             pecas.append(peca)
@@ -203,14 +222,13 @@ def parse_files(args: Namespace):
             logger.exception("")
 
             show_error_popup(
-                f"Erro ao validar peça {row['id_unico_peca']}",
+                f"Erro ao validar peça na linha {idx}: {row.to_dict()}",
                 exc
             )
 
             raise SystemExit from exc
 
     for idx, row in layouts_df.iterrows():
-
         try:
             row = PlanoDeCorteCsvModel.model_validate(row.to_dict())
 
@@ -218,11 +236,25 @@ def parse_files(args: Namespace):
             logger.exception("")
 
             show_error_popup(
-                f"Erro ao validar layout {row['codigo_layout']}",
+                f"Erro ao validar layout na linha {idx}: {row.to_dict()}",
                 exc
             )
 
             raise SystemExit from exc
+
+        # Pode incluir recorte, que não devem ser tratados como peças
+        todas_as_pecas_desse_plano = [
+            peca for peca in pecas if peca.codigo_layout == row.codigo_layout]
+
+        # Conta quantas peças são recortes
+        qtd_recortes = len(
+            [peca for peca in todas_as_pecas_desse_plano if peca.recorte])
+
+        # Mantem somente as peças que não são recortes
+        pecas_desse_plano = [
+            peca for peca in todas_as_pecas_desse_plano if not peca.recorte]
+
+        figure = get_figure_for_layout(args, row)
 
         plano = PlanoDeCorteCreateModel(
             codigo_layout=row.codigo_layout,
@@ -238,14 +270,15 @@ def parse_files(args: Namespace):
             qtd_chapas=row.qtd_chapas,
             tempo_estimado_seg=row.tempo_estimado_seg,
             tipo=row.tipo,
-            figure=get_figure_for_layout(args, row),
+            qtd_recortes=qtd_recortes,
+            figure=figure,
             pecas=[
                 PlanoDeCortePecasCreateModel(
                     qtd_cortada_no_layout=peca.qtd_cortada_no_layout,
                     id_unico_peca=peca.id_unico_peca,
                     id_ordem=peca.id_ordem,
                     tempo_corte_segundos=peca.tempo_corte_segundos,
-                ) for peca in pecas if peca.codigo_layout == row.codigo_layout
+                ) for peca in pecas_desse_plano
             ]
         )
 

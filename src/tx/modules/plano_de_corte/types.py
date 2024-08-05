@@ -66,5 +66,6 @@ class PlanoDeCorteCreateModel(BaseModel):
     codigo_lote: str
     qtd_chapas: int
     tempo_estimado_seg: float
+    qtd_recortes: int
     figure: Optional[str] = Field(None)
     pecas: List[PlanoDeCortePecasCreateModel] = Field([])

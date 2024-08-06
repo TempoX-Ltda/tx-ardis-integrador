@@ -21,7 +21,7 @@ from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, PlanoDeCort
 
 from tx.tx import Tx
 
-__version__ = "2.0.4"
+__version__ = "2.1.0"
 
 sg.theme("Dark Blue 3")
 

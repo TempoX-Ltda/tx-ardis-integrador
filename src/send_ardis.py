@@ -17,35 +17,17 @@ from pydantic import BaseModel
 
 from pandas import read_csv
 import PySimpleGUI as sg
-from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, PlanoDeCortePecasCreateModel, TipoMateriaPrima
+from tx.modules.plano_de_corte.types import (
+    PlanoDeCorteCreateModel,
+    PlanoDeCortePecasCreateModel,
+    TipoMateriaPrima,
+)
 
 from tx.tx import Tx
 
 __version__ = "2.1.0"
 
 sg.theme("Dark Blue 3")
-
-log_file = tempfile.gettempdir() + "/send_ardis.log"
-
-formatter = logging.Formatter(
-    "%(asctime)s,%(msecs)d | %(name)s | %(levelname)s | %(message)s"
-)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-file_log_handler = RotatingFileHandler(
-    log_file, maxBytes=100 * 1024 * 1024, backupCount=2
-)
-file_log_handler.setLevel(logging.DEBUG)
-file_log_handler.setFormatter(formatter)
-
-stdout_handler = logging.StreamHandler(sys.stdout)
-stdout_handler.setLevel(logging.INFO)
-stdout_handler.setFormatter(formatter)
-
-logger.addHandler(file_log_handler)
-logger.addHandler(stdout_handler)
 
 parser = ArgumentParser(
     prog="send_ardis",
@@ -112,13 +94,46 @@ parser.add_argument(
     default=None,
 )
 
+parser.add_argument(
+    "--log-file",
+    type=str,
+    help="Caminho para o arquivo de log. Se não informado, o arquivo será temporário.",
+    default=tempfile.gettempdir() + "/send_ardis.log",
+)
+
 args = parser.parse_args()
+
+log_file = args.log_file
+log_dir = os.path.dirname(log_file)
+
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+formatter = logging.Formatter(
+    "%(asctime)s,%(msecs)d | %(name)s | %(levelname)s | %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+file_log_handler = RotatingFileHandler(
+    log_file, maxBytes=100 * 1024 * 1024, backupCount=2
+)
+file_log_handler.setLevel(logging.DEBUG)
+file_log_handler.setFormatter(formatter)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.INFO)
+stdout_handler.setFormatter(formatter)
+
+logger.addHandler(file_log_handler)
+logger.addHandler(stdout_handler)
+
 
 logger.debug("Argumentos: %s", args)
 
 
 def coerce_nan_to_none(x: Any) -> Any:
-
     try:
         if isnan(x):
             return None
@@ -150,7 +165,8 @@ class PlanoDeCortePecasCsvModel(BaseModel):
         if self.recorte:
             if self.id_ordem is not None or self.id_unico_peca is not None:
                 raise ValueError(
-                    "Peça de recorte não deve ter id_ordem ou id_unico_peca")
+                    "Peça de recorte não deve ter id_ordem ou id_unico_peca"
+                )
 
         return self
 
@@ -185,7 +201,6 @@ def show_error_popup(msg: str, exc: Exception):
 
 
 def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCsvModel):
-
     figure_path = os.path.join(
         str(args.figures_directory)
         .strip('"')
@@ -203,7 +218,6 @@ def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCsvModel):
 
 
 def parse_files(args: Namespace):
-
     layouts_df = read_csv(args.layouts_file, sep=args.sep)
     parts_df = read_csv(args.parts_file, sep=args.sep)
 
@@ -222,8 +236,7 @@ def parse_files(args: Namespace):
             logger.exception("")
 
             show_error_popup(
-                f"Erro ao validar peça na linha {idx}: {row.to_dict()}",
-                exc
+                f"Erro ao validar peça na linha {idx}: {row.to_dict()}", exc
             )
 
             raise SystemExit from exc
@@ -236,23 +249,25 @@ def parse_files(args: Namespace):
             logger.exception("")
 
             show_error_popup(
-                f"Erro ao validar layout na linha {idx}: {row.to_dict()}",
-                exc
+                f"Erro ao validar layout na linha {idx}: {row.to_dict()}", exc
             )
 
             raise SystemExit from exc
 
         # Pode incluir recorte, que não devem ser tratados como peças
         todas_as_pecas_desse_plano = [
-            peca for peca in pecas if peca.codigo_layout == row.codigo_layout]
+            peca for peca in pecas if peca.codigo_layout == row.codigo_layout
+        ]
 
         # Conta quantas peças são recortes
         qtd_recortes = len(
-            [peca for peca in todas_as_pecas_desse_plano if peca.recorte])
+            [peca for peca in todas_as_pecas_desse_plano if peca.recorte]
+        )
 
         # Mantem somente as peças que não são recortes
         pecas_desse_plano = [
-            peca for peca in todas_as_pecas_desse_plano if not peca.recorte]
+            peca for peca in todas_as_pecas_desse_plano if not peca.recorte
+        ]
 
         figure = get_figure_for_layout(args, row)
 
@@ -278,8 +293,9 @@ def parse_files(args: Namespace):
                     id_unico_peca=peca.id_unico_peca,
                     id_ordem=peca.id_ordem,
                     tempo_corte_segundos=peca.tempo_corte_segundos,
-                ) for peca in pecas_desse_plano
-            ]
+                )
+                for peca in pecas_desse_plano
+            ],
         )
 
         planos.append(plano)
@@ -299,10 +315,7 @@ def main():
     except Exception as exc:
         logger.exception("")
 
-        show_error_popup(
-            "Não foi possível se conectar a API",
-            exc
-        )
+        show_error_popup("Não foi possível se conectar a API", exc)
 
         raise SystemExit from exc
 
@@ -317,7 +330,6 @@ def main():
         message = "Erro ao enviar dados para a API"
 
         if isinstance(exc, HTTPStatusError):
-
             response = exc.response.json()
 
             server_message = response.get("mensagem") or json.dumps(response)

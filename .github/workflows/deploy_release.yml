@@ -19,10 +19,10 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.12'
+        python-version: '3.8'
 
     - name: Install Build dependencies
-      run: pip install -r requirements.txt -r requirements.windows.txt -r requirements.build.txt
+      run: pip install -r src/requirements.txt -r src/requirements.windows.txt -r src/requirements.build.txt
 
     - name: Build
       run: make build-exe

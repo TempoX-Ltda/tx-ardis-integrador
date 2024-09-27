@@ -27,12 +27,6 @@ jobs:
     - name: Build
       run: make build-exe
 
-    - name: ls
-      run: dir src/
-
-    - name: ls
-      run: dir 
-
     - name: Add File to release
       uses: softprops/action-gh-release@v1
       with:

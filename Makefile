@@ -6,4 +6,4 @@ ifeq ($(OS),Windows_NT)
 endif
 
 build-exe:
-	pyinstaller src/send_ardis.py -F
+	pyinstaller src/send_ardis.spec

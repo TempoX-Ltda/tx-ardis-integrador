@@ -5,27 +5,29 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-    
+
 jobs:
   build:
+    runs-on: windows-latest
 
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: PyInstaller Windows
-      # You may pin to the exact commit or the version.
-      # uses: JackMcKew/pyinstaller-action-windows@a8dee21ad01bbc7e7363d445bb632691b95ba057
-      uses: GaNiziolek/pyinstaller-action-windows@d224f5c898ad9e79102ce6ffbaa9e8e7d30b41d2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        # Directory containing source code (optional requirements.txt).
-        path: src
+        python-version: '3.12'
+
+    - name: Install Build dependencies
+      run: pip install -r requirements.txt -r requirements.windows.txt -r requirements.build.txt
+
+    - name: Build
+      run: make build-exe
 
     - name: Add File to release
       uses: softprops/action-gh-release@v1
       with:
-        files: |
-          src/dist/windows/send_ardis.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        files: src/dist/windows/send_ardis.exe

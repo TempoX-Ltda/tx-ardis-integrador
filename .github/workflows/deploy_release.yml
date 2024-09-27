@@ -30,4 +30,4 @@ jobs:
     - name: Add File to release
       uses: softprops/action-gh-release@v1
       with:
-        files: src/dist/windows/send_ardis.exe
+        files: src/dist/send_ardis.exe

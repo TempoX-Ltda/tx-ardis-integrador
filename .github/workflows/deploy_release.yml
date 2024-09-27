@@ -29,11 +29,11 @@ jobs:
 
     - name: ls
       run: dir src/
-      
+
     - name: ls
       run: dir 
 
     - name: Add File to release
       uses: softprops/action-gh-release@v1
       with:
-        files: src/dist/send_ardis.exe
+        files: dist/send_ardis.exe

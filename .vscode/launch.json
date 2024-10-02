@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/send_ardis.py",
             "args": [
-                "--host", "http://172.16.1.230:6543/",
+                "--host", "http://172.16.0.253:6544/",
                 "-u", "admin",
                 "-p", "qwe123",
                 "--layouts-file", "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv",

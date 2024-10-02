@@ -1,0 +1,400 @@
+2024-10-01 12:54:43,301,301 | __main__ | DEBUG | Argumentos: Namespace(figures_directory=PosixPath("'/workspaces/tx-ardis-integrador/Ardis/Figures'"), host='http://172.16.1.230:6543/', layouts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, log_file='/workspaces/tx-ardis-integrador/Ardis/Logs/log.txt', parts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, password='qwe123', sep=';', timeout=None, user='admin')
+2024-10-01 12:54:43,323,323 | __main__ | INFO | Iniciando envio de arquivos para o MES
+2024-10-01 12:54:43,323,323 | __main__ | INFO | Conectando a API...
+2024-10-01 12:54:43,687,687 | __main__ | INFO | Conectado a API
+2024-10-01 12:54:43,687,687 | __main__ | INFO | Lendo arquivos csv...
+2024-10-01 12:54:43,711,711 | __main__ | DEBUG | Layouts:      codigo_layout  qtd_chapas  perc_aproveitamento  perc_sobras  ...              nome_projeto codigo_lote   tipo  id_retrabalho
+0    5443I29951L1-           1            82.775548     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+1    5443I29951L2-           1             5.264393    92.194595  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+2    5443I29951L3-           1            78.438880    15.224649  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+3    5443I29951L4-           1            90.159646     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+4    5443I29951L5-           1            86.192708     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+5    5443I29951L6-           1            81.460246    10.894703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+6    5443I29951L7-           1            59.333071    37.055253  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+7    5443I29951L8-           1            86.454801     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+8    5443I29951L9-           1            18.971440    77.664865  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+9   5443I29951L10-           1            85.940049    10.847764  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+10  5443I29951L11-           1            68.277150    14.802752  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+11  5443I29951L12-           1            15.714988    81.654054  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+12  5443I29951L13-           1            88.774704     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+13  5443I29951L14-           1            76.126482    10.733992  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+14  5443I29951L15-           1            16.126482    82.912569  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+15  5443I29951L16-           2            69.072236    19.539499  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+16  5443I29951L17-           1            52.300147    38.994178  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+17  5443I29951L18-           1            26.511057    70.911450  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+18  5443I29951L19-           1            52.429644    33.430040  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+19  5443I29951L20-           1            17.216996    81.878024  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+20  5443I29951L21-           1            83.678624    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+21  5443I29951L22-           1            76.248649    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+22  5443I29951L23-           1            81.670356     6.401818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+23  5443I29951L24-           2            71.554545    18.799565  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+24  5443I29951L25-           1            76.250198     9.792964  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+25  5443I29951L26-           1            14.282609    81.282609  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+26  5443I29951L27-           1            10.821622    88.279902  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+27  5443I29951L28-           1            11.758063    87.285818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+28  5443I29951L29-           1            23.422113    74.451027  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+29  5443I29951L30-           1            23.534152    75.209435  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+30  5443I29951L31-           1            50.164032    38.058103  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+31  5443I29951L32-           1            21.273710    77.349818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+32  5443I29951L33-           1            74.282064     6.781720  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+33  5443I29951L34-           1            10.693857    88.435774  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+34  5443I29951L35-           1            80.725307     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+35  5443I29951L36-           1            25.964226    72.840193  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+36  5443I29951L37-           4            78.775430    19.308973  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+37  5443I29951L38-           1            21.464373    76.886486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+38  5443I29951L39-           1            20.502644    72.086486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+39          RETR5-           1             1.686486    93.275676  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115532.0
+40          RETR5-           1            26.669995    70.400000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115533.0
+
+[41 rows x 14 columns]
+2024-10-01 12:54:43,911,911 | __main__ | DEBUG | Parts:      codigo_layout  qtd_chapas  perc_aproveitamento  perc_sobras  ...              nome_projeto codigo_lote   tipo  id_retrabalho
+0    5443I29951L1-           1            82.775548     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+1    5443I29951L2-           1             5.264393    92.194595  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+2    5443I29951L3-           1            78.438880    15.224649  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+3    5443I29951L4-           1            90.159646     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+4    5443I29951L5-           1            86.192708     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+5    5443I29951L6-           1            81.460246    10.894703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+6    5443I29951L7-           1            59.333071    37.055253  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+7    5443I29951L8-           1            86.454801     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+8    5443I29951L9-           1            18.971440    77.664865  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+9   5443I29951L10-           1            85.940049    10.847764  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+10  5443I29951L11-           1            68.277150    14.802752  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+11  5443I29951L12-           1            15.714988    81.654054  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+12  5443I29951L13-           1            88.774704     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+13  5443I29951L14-           1            76.126482    10.733992  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+14  5443I29951L15-           1            16.126482    82.912569  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+15  5443I29951L16-           2            69.072236    19.539499  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+16  5443I29951L17-           1            52.300147    38.994178  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+17  5443I29951L18-           1            26.511057    70.911450  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+18  5443I29951L19-           1            52.429644    33.430040  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+19  5443I29951L20-           1            17.216996    81.878024  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+20  5443I29951L21-           1            83.678624    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+21  5443I29951L22-           1            76.248649    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+22  5443I29951L23-           1            81.670356     6.401818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+23  5443I29951L24-           2            71.554545    18.799565  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+24  5443I29951L25-           1            76.250198     9.792964  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+25  5443I29951L26-           1            14.282609    81.282609  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+26  5443I29951L27-           1            10.821622    88.279902  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+27  5443I29951L28-           1            11.758063    87.285818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+28  5443I29951L29-           1            23.422113    74.451027  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+29  5443I29951L30-           1            23.534152    75.209435  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+30  5443I29951L31-           1            50.164032    38.058103  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+31  5443I29951L32-           1            21.273710    77.349818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+32  5443I29951L33-           1            74.282064     6.781720  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+33  5443I29951L34-           1            10.693857    88.435774  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+34  5443I29951L35-           1            80.725307     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+35  5443I29951L36-           1            25.964226    72.840193  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+36  5443I29951L37-           4            78.775430    19.308973  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+37  5443I29951L38-           1            21.464373    76.886486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+38  5443I29951L39-           1            20.502644    72.086486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+39          RETR5-           1             1.686486    93.275676  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115532.0
+40          RETR5-           1            26.669995    70.400000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115533.0
+
+[41 rows x 14 columns]
+2024-10-01 12:54:44,130,130 | __main__ | ERROR | 
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 231, in parse_files
+    peca = PlanoDeCortePecasCsvModel.model_validate(row.to_dict())
+  File "/home/vscode/.local/lib/python3.8/site-packages/pydantic/main.py", line 503, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+pydantic_core._pydantic_core.ValidationError: 6 validation errors for PlanoDeCortePecasCsvModel
+id_ordem
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+id_unico_peca
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+qtd_cortada_no_layout
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+tempo_corte_segundos
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+id_retrabalho
+  Input should be a finite number [type=finite_number, input_value=nan, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.5/v/finite_number
+recorte
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 340, in <module>
+    main()
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 318, in main
+    planos = parse_files(args)
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 235, in parse_files
+    raise Exception(
+Exception: Erro ao validar peça na linha 0: {'codigo_layout': '5443I29951L1-', 'qtd_chapas': 1, 'perc_aproveitamento': 82.775547912, 'perc_sobras': 0.0, 'tempo_estimado_seg': 595.296760847, 'descricao_material': 'CHAPA MDF BP 2F 6 MM FRAPE SETHOS', 'id_recurso': 9, 'mm_comprimento': 2750, 'mm_largura': 1850, 'mm_comp_linear': 50280, 'nome_projeto': '5443_PECAS_ESPECIAIS_6MM', 'codigo_lote': 5443, 'tipo': 'chapa', 'id_retrabalho': nan}
+2024-10-01 12:54:44,133,133 | __main__ | INFO | Log completo em: /workspaces/tx-ardis-integrador/Ardis/Logs/log.txt
+2024-10-01 12:54:44,133,133 | __main__ | INFO | Pressione ENTER para encerrar o programa
+2024-10-01 12:56:44,166,166 | __main__ | DEBUG | Argumentos: Namespace(figures_directory=PosixPath("'/workspaces/tx-ardis-integrador/Ardis/Figures'"), host='http://172.16.1.230:6543/', layouts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, log_file='/workspaces/tx-ardis-integrador/Ardis/Logs/log.txt', parts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, password='qwe123', sep=';', timeout=None, user='admin')
+2024-10-01 12:56:44,186,186 | __main__ | INFO | Iniciando envio de arquivos para o MES
+2024-10-01 12:56:44,186,186 | __main__ | INFO | Conectando a API...
+2024-10-01 12:56:44,552,552 | __main__ | INFO | Conectado a API
+2024-10-01 12:56:44,553,553 | __main__ | INFO | Lendo arquivos csv...
+2024-10-01 12:56:44,575,575 | __main__ | DEBUG | Layouts:      codigo_layout  qtd_chapas  perc_aproveitamento  perc_sobras  ...              nome_projeto codigo_lote   tipo  id_retrabalho
+0    5443I29951L1-           1            82.775548     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+1    5443I29951L2-           1             5.264393    92.194595  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+2    5443I29951L3-           1            78.438880    15.224649  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+3    5443I29951L4-           1            90.159646     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+4    5443I29951L5-           1            86.192708     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+5    5443I29951L6-           1            81.460246    10.894703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+6    5443I29951L7-           1            59.333071    37.055253  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+7    5443I29951L8-           1            86.454801     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+8    5443I29951L9-           1            18.971440    77.664865  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+9   5443I29951L10-           1            85.940049    10.847764  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+10  5443I29951L11-           1            68.277150    14.802752  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+11  5443I29951L12-           1            15.714988    81.654054  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+12  5443I29951L13-           1            88.774704     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+13  5443I29951L14-           1            76.126482    10.733992  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+14  5443I29951L15-           1            16.126482    82.912569  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+15  5443I29951L16-           2            69.072236    19.539499  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+16  5443I29951L17-           1            52.300147    38.994178  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+17  5443I29951L18-           1            26.511057    70.911450  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+18  5443I29951L19-           1            52.429644    33.430040  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+19  5443I29951L20-           1            17.216996    81.878024  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+20  5443I29951L21-           1            83.678624    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+21  5443I29951L22-           1            76.248649    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+22  5443I29951L23-           1            81.670356     6.401818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+23  5443I29951L24-           2            71.554545    18.799565  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+24  5443I29951L25-           1            76.250198     9.792964  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+25  5443I29951L26-           1            14.282609    81.282609  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+26  5443I29951L27-           1            10.821622    88.279902  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+27  5443I29951L28-           1            11.758063    87.285818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+28  5443I29951L29-           1            23.422113    74.451027  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+29  5443I29951L30-           1            23.534152    75.209435  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+30  5443I29951L31-           1            50.164032    38.058103  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+31  5443I29951L32-           1            21.273710    77.349818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+32  5443I29951L33-           1            74.282064     6.781720  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+33  5443I29951L34-           1            10.693857    88.435774  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+34  5443I29951L35-           1            80.725307     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+35  5443I29951L36-           1            25.964226    72.840193  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+36  5443I29951L37-           4            78.775430    19.308973  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+37  5443I29951L38-           1            21.464373    76.886486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+38  5443I29951L39-           1            20.502644    72.086486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+39          RETR5-           1             1.686486    93.275676  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115532.0
+40          RETR5-           1            26.669995    70.400000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115533.0
+
+[41 rows x 14 columns]
+2024-10-01 12:56:44,775,775 | __main__ | DEBUG | Parts:      codigo_layout  qtd_chapas  perc_aproveitamento  perc_sobras  ...              nome_projeto codigo_lote   tipo  id_retrabalho
+0    5443I29951L1-           1            82.775548     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+1    5443I29951L2-           1             5.264393    92.194595  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+2    5443I29951L3-           1            78.438880    15.224649  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+3    5443I29951L4-           1            90.159646     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+4    5443I29951L5-           1            86.192708     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+5    5443I29951L6-           1            81.460246    10.894703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+6    5443I29951L7-           1            59.333071    37.055253  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+7    5443I29951L8-           1            86.454801     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+8    5443I29951L9-           1            18.971440    77.664865  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+9   5443I29951L10-           1            85.940049    10.847764  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+10  5443I29951L11-           1            68.277150    14.802752  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+11  5443I29951L12-           1            15.714988    81.654054  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+12  5443I29951L13-           1            88.774704     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+13  5443I29951L14-           1            76.126482    10.733992  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+14  5443I29951L15-           1            16.126482    82.912569  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+15  5443I29951L16-           2            69.072236    19.539499  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+16  5443I29951L17-           1            52.300147    38.994178  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+17  5443I29951L18-           1            26.511057    70.911450  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+18  5443I29951L19-           1            52.429644    33.430040  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+19  5443I29951L20-           1            17.216996    81.878024  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+20  5443I29951L21-           1            83.678624    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+21  5443I29951L22-           1            76.248649    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+22  5443I29951L23-           1            81.670356     6.401818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+23  5443I29951L24-           2            71.554545    18.799565  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+24  5443I29951L25-           1            76.250198     9.792964  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+25  5443I29951L26-           1            14.282609    81.282609  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+26  5443I29951L27-           1            10.821622    88.279902  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+27  5443I29951L28-           1            11.758063    87.285818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+28  5443I29951L29-           1            23.422113    74.451027  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+29  5443I29951L30-           1            23.534152    75.209435  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+30  5443I29951L31-           1            50.164032    38.058103  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+31  5443I29951L32-           1            21.273710    77.349818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+32  5443I29951L33-           1            74.282064     6.781720  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+33  5443I29951L34-           1            10.693857    88.435774  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+34  5443I29951L35-           1            80.725307     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+35  5443I29951L36-           1            25.964226    72.840193  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+36  5443I29951L37-           4            78.775430    19.308973  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+37  5443I29951L38-           1            21.464373    76.886486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+38  5443I29951L39-           1            20.502644    72.086486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+39          RETR5-           1             1.686486    93.275676  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115532.0
+40          RETR5-           1            26.669995    70.400000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115533.0
+
+[41 rows x 14 columns]
+2024-10-01 12:56:44,946,946 | __main__ | ERROR | 
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 231, in parse_files
+    peca = PlanoDeCortePecasCsvModel.model_validate(row.to_dict())
+  File "/home/vscode/.local/lib/python3.8/site-packages/pydantic/main.py", line 503, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+pydantic_core._pydantic_core.ValidationError: 6 validation errors for PlanoDeCortePecasCsvModel
+id_ordem
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+id_unico_peca
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+qtd_cortada_no_layout
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+tempo_corte_segundos
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+id_retrabalho
+  Input should be a finite number [type=finite_number, input_value=nan, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.5/v/finite_number
+recorte
+  Field required [type=missing, input_value={'codigo_layout': '5443I2...', 'id_retrabalho': nan}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 340, in <module>
+    main()
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 318, in main
+    planos = parse_files(args)
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 235, in parse_files
+    raise Exception(
+Exception: Erro ao validar peça na linha 0: {'codigo_layout': '5443I29951L1-', 'qtd_chapas': 1, 'perc_aproveitamento': 82.775547912, 'perc_sobras': 0.0, 'tempo_estimado_seg': 595.296760847, 'descricao_material': 'CHAPA MDF BP 2F 6 MM FRAPE SETHOS', 'id_recurso': 9, 'mm_comprimento': 2750, 'mm_largura': 1850, 'mm_comp_linear': 50280, 'nome_projeto': '5443_PECAS_ESPECIAIS_6MM', 'codigo_lote': 5443, 'tipo': 'chapa', 'id_retrabalho': nan}
+2024-10-01 12:56:44,948,948 | __main__ | INFO | Log completo em: /workspaces/tx-ardis-integrador/Ardis/Logs/log.txt
+2024-10-01 12:56:44,949,949 | __main__ | INFO | Pressione ENTER para encerrar o programa
+2024-10-01 13:02:59,573,573 | __main__ | DEBUG | Argumentos: Namespace(figures_directory=PosixPath("'/workspaces/tx-ardis-integrador/Ardis/Figures'"), host='http://172.16.1.230:6543/', layouts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, log_file='/workspaces/tx-ardis-integrador/Ardis/Logs/log.txt', parts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, password='qwe123', sep=';', timeout=None, user='admin')
+2024-10-01 13:02:59,594,594 | __main__ | INFO | Iniciando envio de arquivos para o MES
+2024-10-01 13:02:59,595,595 | __main__ | INFO | Conectando a API...
+2024-10-01 13:02:59,931,931 | __main__ | INFO | Conectado a API
+2024-10-01 13:02:59,931,931 | __main__ | INFO | Lendo arquivos csv...
+2024-10-01 13:02:59,957,957 | __main__ | DEBUG | Layouts:      codigo_layout  qtd_chapas  perc_aproveitamento  perc_sobras  ...              nome_projeto codigo_lote   tipo  id_retrabalho
+0    5443I29951L1-           1            82.775548     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+1    5443I29951L2-           1             5.264393    92.194595  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+2    5443I29951L3-           1            78.438880    15.224649  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+3    5443I29951L4-           1            90.159646     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+4    5443I29951L5-           1            86.192708     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+5    5443I29951L6-           1            81.460246    10.894703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+6    5443I29951L7-           1            59.333071    37.055253  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+7    5443I29951L8-           1            86.454801     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+8    5443I29951L9-           1            18.971440    77.664865  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+9   5443I29951L10-           1            85.940049    10.847764  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+10  5443I29951L11-           1            68.277150    14.802752  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+11  5443I29951L12-           1            15.714988    81.654054  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+12  5443I29951L13-           1            88.774704     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+13  5443I29951L14-           1            76.126482    10.733992  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+14  5443I29951L15-           1            16.126482    82.912569  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+15  5443I29951L16-           2            69.072236    19.539499  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+16  5443I29951L17-           1            52.300147    38.994178  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+17  5443I29951L18-           1            26.511057    70.911450  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+18  5443I29951L19-           1            52.429644    33.430040  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+19  5443I29951L20-           1            17.216996    81.878024  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+20  5443I29951L21-           1            83.678624    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+21  5443I29951L22-           1            76.248649    11.374703  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+22  5443I29951L23-           1            81.670356     6.401818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+23  5443I29951L24-           2            71.554545    18.799565  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+24  5443I29951L25-           1            76.250198     9.792964  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+25  5443I29951L26-           1            14.282609    81.282609  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+26  5443I29951L27-           1            10.821622    88.279902  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+27  5443I29951L28-           1            11.758063    87.285818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+28  5443I29951L29-           1            23.422113    74.451027  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+29  5443I29951L30-           1            23.534152    75.209435  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+30  5443I29951L31-           1            50.164032    38.058103  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+31  5443I29951L32-           1            21.273710    77.349818  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+32  5443I29951L33-           1            74.282064     6.781720  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+33  5443I29951L34-           1            10.693857    88.435774  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+34  5443I29951L35-           1            80.725307     0.000000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+35  5443I29951L36-           1            25.964226    72.840193  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+36  5443I29951L37-           4            78.775430    19.308973  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+37  5443I29951L38-           1            21.464373    76.886486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+38  5443I29951L39-           1            20.502644    72.086486  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa            NaN
+39         RETR53-           1             1.686486    93.275676  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115532.0
+40         RETR54-           1            26.669995    70.400000  ...  5443_PECAS_ESPECIAIS_6MM        5443  chapa       115533.0
+
+[41 rows x 14 columns]
+2024-10-01 13:03:00,173,173 | __main__ | DEBUG | Parts:      id_ordem  id_unico_peca   codigo_layout  qtd_cortada_no_layout  tempo_corte_segundos  recorte
+0         NaN            NaN   5443I29951L1-               1.000000             50.062136      1.0
+1         NaN            NaN   5443I29951L1-               1.000000             48.470703      1.0
+2         NaN            NaN   5443I29951L1-               1.000000             48.114193      1.0
+3         NaN            NaN   5443I29951L1-               1.000000             47.816488      1.0
+4         NaN            NaN   5443I29951L1-               1.000000             46.702853      1.0
+..        ...            ...             ...                    ...                   ...      ...
+263       NaN            NaN  5443I29951L41-               1.000000             45.395732      1.0
+264       NaN            NaN  5443I29951L41-               1.000000             35.080259      1.0
+265       NaN            NaN  5443I29951L41-               1.000000              7.377632      1.0
+266       NaN            NaN         RETR53-               1.000000            181.436906      0.0
+267       NaN            NaN         RETR54-            1181.436906              0.000000      NaN
+
+[268 rows x 6 columns]
+2024-10-01 13:03:00,246,246 | __main__ | ERROR | 
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 231, in parse_files
+    peca = PlanoDeCortePecasCsvModel.model_validate(row.to_dict())
+  File "/home/vscode/.local/lib/python3.8/site-packages/pydantic/main.py", line 503, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PlanoDeCortePecasCsvModel
+id_retrabalho
+  Field required [type=missing, input_value={'id_ordem': nan, 'id_uni...2135803, 'recorte': 1.0}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/missing
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 340, in <module>
+    main()
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 318, in main
+    planos = parse_files(args)
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 235, in parse_files
+    raise Exception(
+Exception: Erro ao validar peça na linha 0: {'id_ordem': nan, 'id_unico_peca': nan, 'codigo_layout': '5443I29951L1-', 'qtd_cortada_no_layout': 1.0, 'tempo_corte_segundos': 50.062135803, 'recorte': 1.0}
+2024-10-01 13:03:00,249,249 | __main__ | INFO | Log completo em: /workspaces/tx-ardis-integrador/Ardis/Logs/log.txt
+2024-10-01 13:03:00,249,249 | __main__ | INFO | Pressione ENTER para encerrar o programa
+2024-10-01 13:06:44,024,24 | __main__ | DEBUG | Argumentos: Namespace(figures_directory=PosixPath("'/workspaces/tx-ardis-integrador/Ardis/Figures'"), host='http://172.16.1.230:6543/', layouts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, log_file='/workspaces/tx-ardis-integrador/Ardis/Logs/log.txt', parts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, password='qwe123', sep=';', timeout=None, user='admin')
+2024-10-01 13:06:44,056,56 | __main__ | INFO | Iniciando envio de arquivos para o MES
+2024-10-01 13:06:44,056,56 | __main__ | INFO | Conectando a API...
+2024-10-01 13:06:44,451,451 | __main__ | INFO | Conectado a API
+2024-10-01 13:06:44,452,452 | __main__ | INFO | Lendo arquivos csv...
+2024-10-01 13:06:44,472,472 | __main__ | ERROR | 
+Traceback (most recent call last):
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 340, in <module>
+    main()
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 318, in main
+    planos = parse_files(args)
+  File "/workspaces/tx-ardis-integrador/src/send_ardis.py", line 221, in parse_files
+    parts_df = read_csv(args.parts_file, sep=args.sep)
+  File "/home/vscode/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 912, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/home/vscode/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 583, in _read
+    return parser.read(nrows)
+  File "/home/vscode/.local/lib/python3.8/site-packages/pandas/io/parsers/readers.py", line 1704, in read
+    ) = self._engine.read(  # type: ignore[attr-defined]
+  File "/home/vscode/.local/lib/python3.8/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 234, in read
+    chunks = self._reader.read_low_memory(nrows)
+  File "pandas/_libs/parsers.pyx", line 812, in pandas._libs.parsers.TextReader.read_low_memory
+  File "pandas/_libs/parsers.pyx", line 873, in pandas._libs.parsers.TextReader._read_rows
+  File "pandas/_libs/parsers.pyx", line 848, in pandas._libs.parsers.TextReader._tokenize_rows
+  File "pandas/_libs/parsers.pyx", line 859, in pandas._libs.parsers.TextReader._check_tokenize_status
+  File "pandas/_libs/parsers.pyx", line 2025, in pandas._libs.parsers.raise_parser_error
+pandas.errors.ParserError: Error tokenizing data. C error: Expected 6 fields in line 268, saw 7
+
+2024-10-01 13:06:44,480,480 | __main__ | INFO | Log completo em: /workspaces/tx-ardis-integrador/Ardis/Logs/log.txt
+2024-10-01 13:06:44,480,480 | __main__ | INFO | Pressione ENTER para encerrar o programa
+2024-10-01 13:25:43,807,807 | __main__ | DEBUG | Argumentos: Namespace(figures_directory=PosixPath("'/workspaces/tx-ardis-integrador/Ardis/Figures'"), host='http://172.16.1.230:6543/', layouts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, log_file='/workspaces/tx-ardis-integrador/Ardis/Logs/log.txt', parts_file=<_io.TextIOWrapper name='/workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_NOVO_FIGURA.csv' mode='r' encoding='UTF-8'>, password='qwe123', sep=',', timeout=None, user='admin')
+2024-10-01 13:25:43,829,829 | __main__ | INFO | Iniciando envio de arquivos para o MES
+2024-10-01 13:25:43,830,830 | __main__ | INFO | Conectando a API...
+2024-10-01 13:25:44,198,198 | __main__ | INFO | Conectado a API
+2024-10-01 13:25:44,199,199 | __main__ | INFO | Lendo arquivos csv...
+2024-10-01 13:25:44,220,220 | __main__ | DEBUG | Layouts:   codigo_layout  qtd_chapas  perc_aproveitamento  perc_sobras  ...  mm_comp_linear              nome_projeto  codigo_lote   tipo
+0       RETR53-           1            26.669995         70.4  ...           14920  5443_PECAS_ESPECIAIS_6MM         5443  chapa
+1       RETR54-           1            26.669995         70.4  ...           14920  5443_PECAS_ESPECIAIS_6MM         5443  chapa
+
+[2 rows x 13 columns]
+2024-10-01 13:25:44,330,330 | __main__ | DEBUG | Parts:    id_ordem  id_unico_peca codigo_layout  qtd_cortada_no_layout  tempo_corte_segundos  recorte  id_retrabalho
+0  11228161            NaN       RETR53-                      1            181.436906        0         115532
+1  11228170            NaN       RETR54-                      1            181.436906        0         115533
+2024-10-01 13:25:44,381,381 | __main__ | INFO | Arquivo /workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_NOVO_FIGURA.csv lido com sucesso
+2024-10-01 13:25:44,383,383 | __main__ | WARNING | O arquivo "/workspaces/tx-ardis-integrador/Ardis/Figures/RETR53-.png" não foi encontrado
+2024-10-01 13:25:44,384,384 | __main__ | WARNING | O arquivo "/workspaces/tx-ardis-integrador/Ardis/Figures/RETR54-.png" não foi encontrado
+2024-10-01 13:25:44,384,384 | __main__ | INFO | Arquivo /workspaces/tx-ardis-integrador/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv lido com sucesso
+2024-10-01 13:25:44,384,384 | __main__ | INFO | Enviando projeto para a API...
+2024-10-01 13:25:45,328,328 | __main__ | INFO | Envio finalizado!
+2024-10-01 13:25:45,328,328 | __main__ | INFO | Log completo em: /workspaces/tx-ardis-integrador/Ardis/Logs/log.txt
+2024-10-01 13:25:45,328,328 | __main__ | INFO | Finalizando automaticamente em 10 segundos...
+2024-10-01 13:25:45,329,329 | __main__ | INFO | Pressione ENTER para finalizar agora

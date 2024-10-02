@@ -13,11 +13,11 @@
                 "--host", "http://172.16.1.230:6543/",
                 "-u", "admin",
                 "-p", "qwe123",
-                "--layouts-file", "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO_FIGURA.csv",
-                "--parts-file",   "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_NOVO_FIGURA.csv",
+                "--layouts-file", "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_NOVO (4).TXT",
+                "--parts-file",   "${workspaceFolder}/Ardis/Relatórios Exportados/CSV_TO_TEMPOX_DB_MATORD_NOVO (4).TXT",
                 "--sep", ";",
-                "--error-on-duplicated-part",
-                "--figures-directory", "'${workspaceFolder}/Ardis/Figures'"
+                "--figures-directory", "'${workspaceFolder}/Ardis/Figures'",
+                "--log-file", "${workspaceFolder}/Ardis/Logs/log.txt"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

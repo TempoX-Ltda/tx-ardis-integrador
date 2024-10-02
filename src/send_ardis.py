@@ -8,6 +8,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 import tempfile
 import sys
+import threading
+import time
 from typing import Any, List, Optional
 from typing_extensions import Annotated
 from httpx import HTTPStatusError, Timeout
@@ -16,36 +18,30 @@ from pydantic import BeforeValidator, ConfigDict, ValidationError, model_validat
 from pydantic import BaseModel
 
 from pandas import read_csv
-import PySimpleGUI as sg
-from tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel, PlanoDeCortePecasCreateModel, TipoMateriaPrima
+from tx.modules.plano_de_corte.types import (
+    PlanoDeCorteCreateModel,
+    PlanoDeCortePecasCreateModel,
+    TipoMateriaPrima,
+)
+
+if os.name == 'nt':  # Verifica se o sistema operacional é Windows
+    import win32gui
+    import win32con
+    import ctypes
+
+    def set_console_active():
+        # Obtém o identificador da janela do console atual
+        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+        if hwnd:
+            # Garante que a janela esteja visível
+            win32gui.ShowWindow(hwnd, win32con.SW_SHOW)
+            # Coloca a janela em primeiro plano
+            win32gui.SetForegroundWindow(hwnd)
+
 
 from tx.tx import Tx
 
-__version__ = "2.1.0"
-
-sg.theme("Dark Blue 3")
-
-log_file = tempfile.gettempdir() + "/send_ardis.log"
-
-formatter = logging.Formatter(
-    "%(asctime)s,%(msecs)d | %(name)s | %(levelname)s | %(message)s"
-)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-file_log_handler = RotatingFileHandler(
-    log_file, maxBytes=100 * 1024 * 1024, backupCount=2
-)
-file_log_handler.setLevel(logging.DEBUG)
-file_log_handler.setFormatter(formatter)
-
-stdout_handler = logging.StreamHandler(sys.stdout)
-stdout_handler.setLevel(logging.INFO)
-stdout_handler.setFormatter(formatter)
-
-logger.addHandler(file_log_handler)
-logger.addHandler(stdout_handler)
+__version__ = "2.2.1"
 
 parser = ArgumentParser(
     prog="send_ardis",
@@ -94,12 +90,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--error-on-duplicated-part",
-    action="store_true",
-    help="Impede o programa de continuar se o id único de uma peça já está inserido em algum plano ativo",
-)
-
-parser.add_argument(
     "--figures-directory",
     type=pathlib.Path,
     help="Diretório onde as figures de cada plano serão buscadas. O nome de cada arquivo deve ser igual ao código do plano, com extensão .png",
@@ -112,19 +102,50 @@ parser.add_argument(
     default=None,
 )
 
+parser.add_argument(
+    "--log-file",
+    type=str,
+    help="Caminho para o arquivo de log. Se não informado, o arquivo será temporário.",
+    default=tempfile.gettempdir() + "/send_ardis.log",
+)
+
 args = parser.parse_args()
+
+log_file = args.log_file
+log_dir = os.path.dirname(log_file)
+
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+formatter = logging.Formatter(
+    "%(asctime)s,%(msecs)d | %(name)s | %(levelname)s | %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+file_log_handler = RotatingFileHandler(
+    log_file, maxBytes=100 * 1024 * 1024, backupCount=2
+)
+file_log_handler.setLevel(logging.DEBUG)
+file_log_handler.setFormatter(formatter)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.INFO)
+stdout_handler.setFormatter(formatter)
+
+logger.addHandler(file_log_handler)
+logger.addHandler(stdout_handler)
+
 
 logger.debug("Argumentos: %s", args)
 
 
 def coerce_nan_to_none(x: Any) -> Any:
-
     try:
         if isnan(x):
             return None
     except TypeError as exc:
-        logger.exception("")
-
         raise ValueError(f"Erro ao converter {x} para None") from exc
 
     return x
@@ -151,7 +172,8 @@ class PlanoDeCortePecasCsvModel(BaseModel):
         if self.recorte:
             if self.id_ordem is not None or self.id_unico_peca is not None:
                 raise ValueError(
-                    "Peça de recorte não deve ter id_ordem ou id_unico_peca")
+                    "Peça de recorte não deve ter id_ordem ou id_unico_peca"
+                )
 
         return self
 
@@ -175,18 +197,7 @@ class PlanoDeCorteCsvModel(BaseModel):
     tempo_estimado_seg: float
 
 
-def show_error_popup(msg: str, exc: Exception):
-    _ = sg.Popup(
-        msg,
-        str(exc),
-        f"Log completo em: {log_file}",
-        title="Erro",
-        button_type=sg.POPUP_BUTTONS_OK,
-    )
-
-
 def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCsvModel):
-
     figure_path = os.path.join(
         str(args.figures_directory)
         .strip('"')
@@ -204,6 +215,7 @@ def get_figure_for_layout(args: Namespace, plano: PlanoDeCorteCsvModel):
 
 
 def parse_files(args: Namespace):
+    logger. info("Lendo arquivos csv...")
 
     layouts_df = read_csv(args.layouts_file, sep=args.sep)
     parts_df = read_csv(args.parts_file, sep=args.sep)
@@ -220,40 +232,33 @@ def parse_files(args: Namespace):
             pecas.append(peca)
 
         except ValidationError as exc:
-            logger.exception("")
+            raise Exception(
+                f"Erro ao validar peça na linha {idx}: {row.to_dict()}") from exc
 
-            show_error_popup(
-                f"Erro ao validar peça na linha {idx}: {row.to_dict()}",
-                exc
-            )
-
-            raise SystemExit from exc
+    logger.info("Arquivo %s lido com sucesso", args.parts_file.name)
 
     for idx, row in layouts_df.iterrows():
         try:
             row = PlanoDeCorteCsvModel.model_validate(row.to_dict())
 
         except ValidationError as exc:
-            logger.exception("")
-
-            show_error_popup(
-                f"Erro ao validar layout na linha {idx}: {row.to_dict()}",
-                exc
-            )
-
-            raise SystemExit from exc
+            raise Exception(
+                f"Erro ao validar layout na linha {idx}: {row.to_dict()}") from exc
 
         # Pode incluir recorte, que não devem ser tratados como peças
         todas_as_pecas_desse_plano = [
-            peca for peca in pecas if peca.codigo_layout == row.codigo_layout]
+            peca for peca in pecas if peca.codigo_layout == row.codigo_layout
+        ]
 
         # Conta quantas peças são recortes
         qtd_recortes = len(
-            [peca for peca in todas_as_pecas_desse_plano if peca.recorte])
+            [peca for peca in todas_as_pecas_desse_plano if peca.recorte]
+        )
 
         # Mantem somente as peças que não são recortes
         pecas_desse_plano = [
-            peca for peca in todas_as_pecas_desse_plano if not peca.recorte]
+            peca for peca in todas_as_pecas_desse_plano if not peca.recorte
+        ]
 
         figure = get_figure_for_layout(args, row)
 
@@ -286,10 +291,16 @@ def parse_files(args: Namespace):
 
         planos.append(plano)
 
+    logger.info("Arquivo %s lido com sucesso", args.layouts_file.name)
+
     return planos
 
 
 def main():
+
+    logger.info("Iniciando envio de arquivos para o MES")
+
+    logger.info("Conectando a API...")
     try:
         tx = Tx(
             base_url=args.host,
@@ -299,60 +310,70 @@ def main():
             default_timeout=Timeout(args.timeout),
         )
     except Exception as exc:
-        logger.exception("")
+        raise Exception("Não foi possível se conectar a API") from exc
 
-        show_error_popup(
-            "Não foi possível se conectar a API",
-            exc
-        )
-
-        raise SystemExit from exc
+    logger.info("Conectado a API")
 
     # Carrega os arquivos
     planos = parse_files(args)
 
+    logger.info("Enviando projeto para a API...")
     try:
         tx.plano_de_corte.novo_projeto(planos)
     except Exception as exc:
-        logger.exception("")
-
         message = "Erro ao enviar dados para a API"
 
         if isinstance(exc, HTTPStatusError):
-
             response = exc.response.json()
 
             server_message = response.get("mensagem") or json.dumps(response)
 
-            message = f"Erro {exc.response.status_code} ao enviar dados para a API\n\n{server_message}"
+            message = f"Erro {exc.response.status_code} ao enviar dados para a API:\n{server_message}"
 
-        show_error_popup(message, exc)
+        raise Exception(message) from exc
 
-        raise SystemExit from exc
-
-    _ = sg.Popup(
-        "Envio finalizado!",
-        f"Log completo em: {log_file}",
-        "Essa mensagem irá fechar automaticamente em 5 segundos.",
-        title="Envio finalizado",
-        button_type=sg.POPUP_BUTTONS_OK,
-        auto_close=True,
-        auto_close_duration=5,
-    )
+    logger.info("Envio finalizado!")
 
 
 if __name__ == "__main__":
     try:
         main()
-    except Exception as exc:
+    except Exception:
         logger.exception("")
 
-        _ = sg.Popup(
-            "Ocorreu um erro não esperado",
-            str(exc),
-            f"Log completo em: {log_file}",
-            title="Erro não esperado",
-            button_type=sg.POPUP_BUTTONS_OK,
-        )
+        if os.name == 'nt':  # Torna a janela do console ativa se estiver no Windows
+            try:
+                set_console_active()
+            except Exception as exc:
+                logger.error("Erro ao ativar janela do console: %s", exc)
 
-        raise SystemExit from exc
+        logger.info("Log completo em: %s", log_file)
+        logger.info("Pressione ENTER para encerrar o programa")
+        input()
+
+        sys.exit(1)
+
+    if os.name == 'nt':  # Torna a janela do console ativa se estiver no Windows
+        try:
+            set_console_active()
+        except Exception as exc:
+            logger.error("Erro ao ativar janela do console: %s", exc)
+
+    logger.info("Log completo em: %s", log_file)
+
+    logger.info("Finalizando automaticamente em 10 segundos...")
+    logger.info("Pressione ENTER para finalizar agora")
+
+    # Aguarda 10 segundos ou até o usuário pressionar ENTER
+    input_thread = threading.Thread(target=input)
+    input_thread.daemon = True
+    input_thread.start()
+    start_time = time.time()
+    while True:
+        if not input_thread.is_alive():
+            break
+        if time.time() - start_time >= 10:
+            break
+        time.sleep(0.1)
+
+    sys.exit(0)

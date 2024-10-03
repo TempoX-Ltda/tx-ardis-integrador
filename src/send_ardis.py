@@ -161,6 +161,7 @@ class PlanoDeCortePecasCsvModel(BaseModel):
     codigo_layout: str
     qtd_cortada_no_layout: int
     tempo_corte_segundos: float
+    id_retrabalho: Optional[int]
 
     # Se `recorte` for true, a peça será considerada como recorte
     # nesse caso `id_ordem` e `id_unico_peca` podem ser None
@@ -283,9 +284,9 @@ def parse_files(args: Namespace):
                     id_unico_peca=peca.id_unico_peca,
                     id_ordem=peca.id_ordem,
                     tempo_corte_segundos=peca.tempo_corte_segundos,
-                )
-                for peca in pecas_desse_plano
-            ],
+                    id_retrabalho=peca.id_retrabalho,
+                ) for peca in pecas_desse_plano
+            ]
         )
 
         planos.append(plano)

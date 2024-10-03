@@ -49,6 +49,7 @@ class PlanoDeCortePecasCreateModel(BaseModel):
     qtd_cortada_no_layout: int
     id_unico_peca: Optional[int]
     id_ordem: Optional[int]
+    id_retrabalho: Optional[int]
     tempo_corte_segundos: float
 
 

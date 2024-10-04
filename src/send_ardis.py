@@ -41,7 +41,7 @@ if os.name == 'nt':  # Verifica se o sistema operacional é Windows
 
 from tx.tx import Tx
 
-__version__ = "2.3.0"
+__version__ = "2.3.1"
 
 parser = ArgumentParser(
     prog="send_ardis",

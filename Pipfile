@@ -3,9 +3,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-[scripts]
-build-exe = "pyinstaller src/tx-mes-cli.spec"
-
 [packages]
 pydantic = "*"
 pandas = "*"

@@ -163,4 +163,4 @@ cython_debug/
 
 
 venv*
-!/src/send_ardis.spec
+!/src/tx-mes-cli.spec

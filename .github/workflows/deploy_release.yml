@@ -27,11 +27,8 @@ jobs:
     - name: Install Python Libs
       run: pipenv install --dev
 
-    - name: Run Tree
-      run: tree /f
-
     - name: Build
-      run: pyinstaller .\src\tx-mes-cli.spec
+      run: pipenv run build-exe
 
     - name: Add File to release
       uses: softprops/action-gh-release@v1

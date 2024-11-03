@@ -1,9 +1,11 @@
+from datetime import datetime
+from typing import Any, Optional
+
 from httpx import Client
 from pydantic import BaseModel
-from typing import Optional, Any
-from datetime import datetime
 
-from ..utils.commons import SuccessResponse
+from src.tx.exceptions import CannotLoginError
+from src.tx.utils.commons import SuccessResponse
 
 
 class LoginReturn(BaseModel):
@@ -21,6 +23,12 @@ class LoginReturn(BaseModel):
 def login(client: Client, user: str, password: str):
     response = client.post("/auth/login", json={"user": user, "password": password})
 
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        raise CannotLoginError(
+            f"Não foi possível realizar login no sistema MES. "
+            f"Retorno da API: {response.text}"
+        ) from e
 
     return SuccessResponse[LoginReturn](**response.json()).retorno

@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[scripts]
+build-exe = "pyinstaller src/tx-mes-cli.spec"
+
+[packages]
+pydantic = "*"
+pandas = "*"
+
+# O pipenv ta com um problema onde não consegue interpretar os markers da maneira correta
+# foi feito report do bug aqui https://github.com/pypa/pipenv/issues/6273#issuecomment-2436581409
+# Para funcionar corretamente é neccessário usar o pipenv >= 2024.3.0 
+pywin32 = {version = "*", markers = "sys_platform == 'win32'"}
+
+[dev-packages]
+ruff = "*"
+pytest = "*"
+pyinstaller = "*"
+pytest-httpx = "*"
+
+[requires]
+python_version = "3.8"

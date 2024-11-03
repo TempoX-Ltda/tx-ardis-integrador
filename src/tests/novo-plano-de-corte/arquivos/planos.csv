@@ -1,0 +1,3 @@
+codigo_layout,qtd_chapas,perc_aproveitamento,perc_sobras,tempo_estimado_seg,descricao_material,id_recurso,mm_comprimento,mm_largura,mm_comp_linear,nome_projeto,codigo_lote,tipo
+PLAN0001,1,26.669995086,70.4,181.436906211,CHAPA MDF BP 2F 6 MM AZUL LORD CHESS,1,2750,1850,14920,PROJETO001,LOTE001,chapa
+PLAN0002,1,26.669995086,70.4,181.436906211,CHAPA MDF BP 2F 6 MM AZUL LORD CHESS,1,2750,1850,14920,PROJETO001,LOTE001,chapa

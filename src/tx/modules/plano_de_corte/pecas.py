@@ -1,9 +1,10 @@
+from datetime import datetime
+from typing import List, Optional
+
 from httpx import Client
 from pydantic import BaseModel
-from typing import List, Optional
-from datetime import datetime
 
-from ...utils.commons import SuccessResponse
+from src.tx.utils.commons import SuccessResponse
 
 
 class PlanoDeCortePecas(BaseModel):

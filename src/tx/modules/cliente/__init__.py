@@ -4,29 +4,23 @@ from typing import List
 
 from httpx import Client, HTTPStatusError
 
-from src.tx.modules.plano_de_corte.pecas import Pecas
-from src.tx.modules.plano_de_corte.types import PlanoDeCorteCreateModel
+from src.tx.modules.cliente.types import NovaOrdemRoteiroEIdUnico
 from src.tx.utils.commons import SuccessResponse
 
 logger = logging.getLogger(__name__)
 
 
-class PlanoDeCorte:
+class Cliente:
     def __init__(self, client: Client):
         self.client = client
 
-        self.pecas = Pecas(self.client)
+    def nova_ordem(self, ordens: List[NovaOrdemRoteiroEIdUnico]):
+        logger.info("Enviando ordem para a API...")
 
-    def novo_projeto(
-        self,
-        planos: List[PlanoDeCorteCreateModel],
-    ):
-        logger.info("Enviando projeto para a API...")
-
-        body = {"planos": [plano.model_dump() for plano in planos]}
+        body = {"ordens": [ordem.model_dump() for ordem in ordens]}
 
         response = self.client.post(
-            "/plano-de-corte/projeto",
+            "/cliente/ordem",
             json=body,
         )
 

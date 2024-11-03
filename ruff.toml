@@ -1,0 +1,7 @@
+line-length = 88
+
+
+[lint]
+fixable = ["ALL"]
+
+extend-select = ["I"]

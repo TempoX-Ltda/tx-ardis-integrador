@@ -1,7 +1,14 @@
+import logging
+
 import httpx
 
-from .modules._auth import login
-from .modules.plano_de_corte import PlanoDeCorte
+from src.tx.exceptions import CannotLoginError
+from src.tx.modules._auth import login
+from src.tx.modules.cliente import Cliente
+from src.tx.modules.plano_de_corte import PlanoDeCorte
+from src.utils import get_version
+
+logger = logging.getLogger(__name__)
 
 
 class Tx:
@@ -11,7 +18,6 @@ class Tx:
         user: str,
         password: str,
         default_timeout: httpx.Timeout = httpx.Timeout(30.0),
-        user_agent: str = "tx-cli/",
     ):
         self.base_url = base_url
         self.user = user
@@ -22,17 +28,24 @@ class Tx:
             timeout=default_timeout,
         )
 
+        logger.info("Obtendo credênciais de acesso a API...")
         login_data = login(self.client, user, password)
 
         if not login_data.key:
-            raise Exception("Login failed")
+            raise CannotLoginError(
+                "Não foi possível realizar login no sistema MES. "
+                "A resposta da API não contém a chave de autenticação."
+            )
 
         self.client.headers = httpx.Headers(
             {
                 "Authorization": f"Bearer {login_data.key}",
-                "User-Agent": user_agent,
+                "User-Agent": "tx-mes-cli/" + get_version(),
             }
         )
 
+        logger.info("Credênciais obtidas com sucesso!")
+
         # submodules
         self.plano_de_corte = PlanoDeCorte(self.client)
+        self.cliente = Cliente(self.client)

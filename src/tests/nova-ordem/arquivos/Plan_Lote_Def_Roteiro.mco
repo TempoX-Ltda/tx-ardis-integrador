@@ -1,0 +1,184 @@
+﻿
+///*********************************************************
+//
+// TempoX - Dev3
+// Last Update: 30/10/2024
+//
+// - - - - - - - - - - - - - - - -
+// Macro de definição planejamento de lote - GTRP
+// - - - - - - - - - - - - - - - -
+//
+//*********************************************************
+
+
+
+SAVE
+
+///---------------------------
+// VARIAVEIS GLOBAIS
+//---------------------------
+//Sub rotina de identificação de roteiro (INT 1 ou 0)
+identificaRoteiro = 1
+//Coluna onde a informação final do roteiro sera armazenada
+ColunaRoteiro = 'PartExt01'
+//Coluna temporaria é utilizada para calcular o valor do SET
+ColunaRoteiroTemp = 'PartExt02'
+//Pasta para DUMP dos CSVs
+dumpFolder = 'C:\ARDIS\tmp'
+
+// Mapeamento colunas
+col_id_ordem         = 'PartRef'
+col_item_codigo      = 'PartRemark'
+col_item_mascara     = 'PartRef'
+col_quantidade_ordem = 'PartQty'
+
+col_compPeca    = 'PartL'
+col_largPeca    = 'PartW'
+col_espPeca     = 'LPZ'
+col_lotePeca    = 'PartExt17'
+col_pesoBrtPeca = 'PartExt99'
+col_pesoLiqPeca = 'PartExt99'
+col_matPrima    = 'PartMat'
+col_extra01Peca = 'PartExt01'
+col_extra02Peca = 'PartExt02'
+col_extra03Peca = 'PartExt03'
+col_extra04Peca = 'PartExt04'
+col_extra05Peca = 'PartExt05'
+col_extra06Peca = 'PartExt06'
+col_extra07Peca = 'PartExt07'
+col_extra08Peca = 'PartExt08'
+col_extra09Peca = 'PartExt09'
+col_extra10Peca = 'PartExt10'
+
+///---------------------------
+// Secção principal do código
+//---------------------------
+MACRO(if(identificaRoteiro == 1 ;'IDENTIFICA_ROTEIRO'))
+
+//Cria uma lista com todos os arquivos de peças importados
+ListaStk = GET ( 'STKB' ;  ;'NAAM')
+ListaStk = REPLACE(ListaStk;CHR(10);';')
+
+CsvPecaConstruido = ''
+CsvRoteiroConstruido = ''
+
+MACRO('CSV_PECA_BUILD';ListaStk;'IterStk')
+
+// Troca os separadores de TAB por ;
+CsvPecaConstruido = REPLACE(CsvPecaConstruido;CHR(9);';')
+CsvRoteiroConstruido = REPLACE(CsvRoteiroConstruido;CHR(9);';')
+
+WRITEFILE(dumpFolder + '\PECAS_GTRP.CSV'; CsvPecaConstruido; 1)
+WRITEFILE(dumpFolder + '\ROTEIRO_GTRP.CSV'; CsvRoteiroConstruido; 1)
+
+
+
+[IDENTIFICA_ROTEIRO]
+///-----------------------------------------
+//  Variaveis para deifnicao de roteiro da peca
+//------------------------------------------
+
+///---------------------------
+// Colunas do ARDIS com informação do roteiro
+//---------------------------
+//Coluna contendo as informações necessárias para definir o roteiro da peça
+ColunaCorte =       'PartQty'
+ColunaBorda1 =      'PartEdge1'
+ColunaBorda2 =      'PartEdge2'
+ColunaBorda3 =      'PartEdge3'
+ColunaBorda4 =      'PartEdge4'
+ColunaUsinagem =    'PartDraw'
+ColunaEmbalagem =   'PartQty'
+ColunaExpedicao =   'PartQty'
+
+
+///---------------------------
+// Descricao da Operacao
+//---------------------------
+DescCorte ='COR'
+DescBorda1 ='BOR1'
+DescBorda2 ='BOR2'
+DescBorda3 ='BOR3'
+DescBorda4 ='BOR4'
+DescUsinagem ='CNC'
+DescEmbalagem ='EMB'
+DescExpedicao ='EXP'
+
+///---------------------------
+// ID do setor para cada operação de roteiro
+//---------------------------
+idSetorCorte = '1'
+idSetorBorda = '2'
+idSetorFuracao = '3'
+idSetorEmbalagem = '4'
+idSetorExpedicao = '5'
+
+
+
+
+//Limpa a coluna de roteiro de peca
+SET('*.STK';ColunaRoteiro;'';1;99999)
+SET('*.STK';ColunaRoteiroTemp;'';1;99999)
+
+//SET para CORTE
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescCorte)    + '+ "(" +' +    quote(idSetorCorte)    + '+ ")"';1;99999;;'=' + ColunaCorte + '> 0')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para BOR1
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescBorda1)    + '+ "(" +' +    quote(idSetorBorda)    + '+ ")"';1;99999;;'=' + ColunaBorda1 + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para BOR2
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescBorda2)    + '+ "(" +' +    quote(idSetorBorda)    + '+ ")"';1;99999;;'=' + ColunaBorda2 + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para BOR3
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescBorda3)    + '+ "(" +' +    quote(idSetorBorda)    + '+ ")"';1;99999;;'=' + ColunaBorda3 + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para BOR4
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescBorda4)    + '+ "(" +' +    quote(idSetorBorda)    + '+ ")"';1;99999;;'=' + ColunaBorda4 + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para CNC
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescUsinagem)    + '+ "(" +' +    quote(idSetorFuracao)    + '+ ")"';1;99999;;'=' + ColunaUsinagem + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para EMBALAGEM
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescEmbalagem)    + '+ "(" +' +    quote(idSetorEmbalagem)    + '+ ")"';1;99999;;'=' + ColunaEmbalagem + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+//SET para EXPEDICAO
+SET('*.STK';ColunaRoteiro; '=' + ColunaRoteiroTemp + '+' +    quote(DescExpedicao)    + '+ "(" +' +    quote(idSetorExpedicao)    + '+ ")"';1;99999;;'=' + ColunaExpedicao + '!= "" ')
+//Armazena na coluna temporaria o novo valor do roteiro
+SET('*.STK';ColunaRoteiroTemp; '=' + ColunaRoteiro + '+ ","' ;1;99999)
+
+
+
+[CSV_PECA_BUILD]
+///---------------------------
+// Colunas ARDIS para Colunas MES das PECAS
+//---------------------------
+
+ListaPecas = GET ( IterStk + '.stk' ; ; col_id_ordem; col_item_codigo; col_item_mascara; col_quantidade_ordem )
+CsvPecaConstruido = CsvPecaConstruido + ListaPecas
+
+
+//Constroi o CSV de pecas e roteiro a ser salvo
+
+ListaRoteiro = GET (IterStk + '.stk'; ; col_id_ordem; ColunaRoteiro)
+CsvRoteiroConstruido = CsvRoteiroConstruido + ListaRoteiro

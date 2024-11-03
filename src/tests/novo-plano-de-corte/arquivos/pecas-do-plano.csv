@@ -1,0 +1,5 @@
+id_ordem,id_unico_peca,codigo_layout,qtd_cortada_no_layout,tempo_corte_segundos,recorte,id_retrabalho
+10001,,PLAN0001,1,181.436906211,0,
+10002,,PLAN0001,1,181.436906211,0,
+10020,,PLAN0002,1,181.436906211,0,
+10021,,PLAN0002,1,181.436906211,0,

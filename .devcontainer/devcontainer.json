@@ -3,17 +3,7 @@
 {
 	"name": "Python 3.8 - TX Ardis Integrador",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:1-3.8-bullseye",
-	"features": {
-		"ghcr.io/devcontainers-contrib/features/pylint:2": {}
-	},
-
-    "containerEnv": {
-        "DISPLAY": "unix:0"
-    },
-    "mounts": [
-        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
-	]
+	"image": "mcr.microsoft.com/devcontainers/python:1-3.8-bullseye"
 	
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

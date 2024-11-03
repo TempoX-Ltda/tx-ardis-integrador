@@ -21,13 +21,16 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Install Build dependencies
-      run: pip install -r src/requirements.txt -r src/requirements.windows.txt -r src/requirements.build.txt
+    - name: Install Pipenv
+      run: pip install pipenv
+
+    - name: Install Python Libs
+      run: pipenv install --dev --deploy --ignore-pipfile
 
     - name: Build
-      run: make build-exe
+      run: pipenv run build-exe
 
     - name: Add File to release
       uses: softprops/action-gh-release@v1
       with:
-        files: dist/send_ardis.exe
+        files: dist/tx-mes-cli.exe

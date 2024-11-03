@@ -1,0 +1,9 @@
+id_ordem;sequencia_operacao;codigo_operacao;id_setor
+1001;20;BOR1;2
+1001;30;BOR2;2
+1001;40;BOR3;2
+1001;50;BOR4;2
+1002;20;BOR1;2
+1002;30;BOR2;2
+1002;40;BOR3;2
+1002;50;BOR4;2

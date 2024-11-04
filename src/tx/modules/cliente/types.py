@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 
 
 class NovoRoteiroParams(BaseModel):
@@ -18,6 +18,12 @@ class NovoRoteiroParams(BaseModel):
     qtd_finalizada: Optional[int] = None
     id_roteiro_erp: Optional[int] = None
     qtd_finalizada_erp: Optional[int] = None
+
+    @field_serializer("sincronizado_em")
+    def serialize_sincronizado_em(self, sincronizado_em: Optional[datetime], _info):
+        if sincronizado_em is None:
+            return None
+        return sincronizado_em.isoformat()
 
 
 class NovoIdUnicoParams(BaseModel):
@@ -60,6 +66,12 @@ class NovaOrdemParams(BaseModel):
     campo18: Optional[str] = None
     campo19: Optional[str] = None
     campo20: Optional[str] = None
+
+    @field_serializer("data_emissao")
+    def serialize_data_emissao(self, data_emissao: Optional[datetime], _info):
+        if data_emissao is None:
+            return None
+        return data_emissao.isoformat()
 
 
 class NovaOrdemRoteiroEIdUnico(NovaOrdemParams):

@@ -6,6 +6,7 @@ from httpx import Client, HTTPStatusError
 
 from src.tx.modules.cliente.types import NovaOrdemRoteiroEIdUnico
 from src.tx.utils.commons import SuccessResponse
+from src.utils import handle_http_error
 
 logger = logging.getLogger(__name__)
 
@@ -31,14 +32,7 @@ class Cliente:
             message = "Erro ao enviar dados para a API"
 
             if isinstance(exc, HTTPStatusError):
-                response = exc.response.json()
-
-                server_message = response.get("mensagem") or json.dumps(response)
-
-                message = (
-                    f"Erro {exc.response.status_code} ao enviar dados para a API:\n"
-                    f"{server_message}"
-                )
+                message = handle_http_error(exc)
 
             raise Exception(message) from exc
 

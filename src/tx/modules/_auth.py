@@ -1,3 +1,5 @@
+import json
+import logging
 from datetime import datetime
 from typing import Any, Optional
 
@@ -6,6 +8,8 @@ from pydantic import BaseModel
 
 from src.tx.exceptions import CannotLoginError
 from src.tx.utils.commons import SuccessResponse
+
+logger = logging.getLogger(__name__)
 
 
 class LoginReturn(BaseModel):
@@ -31,4 +35,11 @@ def login(client: Client, user: str, password: str):
             f"Retorno da API: {response.text}"
         ) from e
 
-    return SuccessResponse[LoginReturn](**response.json()).retorno
+    try:
+        json_response = response.json()
+    except json.decoder.JSONDecodeError as e:
+        logger.exception('Erro ao decodificar a resposta da API: "%s"', response.text)
+
+        raise e
+
+    return SuccessResponse[LoginReturn](**json_response).retorno

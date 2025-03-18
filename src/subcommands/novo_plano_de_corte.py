@@ -46,6 +46,8 @@ class PlanoDeCortePecasCsvModel(BaseModel):
     qtd_cortada_no_layout: int
     tempo_corte_segundos: float
     id_retrabalho: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
+    qtd_separacao_manual: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
+    qtd_separacao_automatica: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
 
     # Se `recorte` for true, a peça será considerada como recorte
     # nesse caso `id_ordem` e `id_unico_peca` podem ser None
@@ -79,6 +81,8 @@ class PlanoDeCorteCsvModel(BaseModel):
     codigo_lote: str
     qtd_chapas: int
     tempo_estimado_seg: float
+    qtd_separacao_manual: int
+    qtd_separacao_automatica: int
 
 
 def get_figure_for_layout(parsed_args: Namespace, plano: PlanoDeCorteCsvModel):
@@ -160,6 +164,8 @@ def parse_files(parsed_args: Namespace):
             perc_aproveitamento=row.perc_aproveitamento,
             perc_sobras=row.perc_sobras,
             qtd_chapas=row.qtd_chapas,
+            qtd_separacao_manual=row.qtd_separacao_manual,
+            qtd_separacao_automatica=row.qtd_separacao_automatica,
             tempo_estimado_seg=row.tempo_estimado_seg,
             tipo=row.tipo,
             qtd_recortes=qtd_recortes,

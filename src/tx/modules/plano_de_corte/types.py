@@ -38,6 +38,8 @@ class PlanoDeCorteModel(BaseModel):
     em_processo: bool
     finalizado: bool
     tempo_bruto: Optional[str]
+    qtd_separacao_automatica: int
+    qtd_separacao_manual: int
 
 
 class TipoMateriaPrima(str, Enum):
@@ -69,5 +71,7 @@ class PlanoDeCorteCreateModel(BaseModel):
     qtd_chapas: int
     tempo_estimado_seg: float
     qtd_recortes: int
+    qtd_separacao_automatica: int
+    qtd_separacao_manual: int
     figure: Optional[str] = Field(None)
     pecas: List[PlanoDeCortePecasCreateModel] = Field([])

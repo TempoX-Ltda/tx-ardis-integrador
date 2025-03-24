@@ -46,8 +46,6 @@ class PlanoDeCortePecasCsvModel(BaseModel):
     qtd_cortada_no_layout: int
     tempo_corte_segundos: float
     id_retrabalho: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
-    qtd_separacao_manual: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
-    qtd_separacao_automatica: Annotated[Optional[int], BeforeValidator(coerce_nan_to_none)]
 
     # Se `recorte` for true, a peça será considerada como recorte
     # nesse caso `id_ordem` e `id_unico_peca` podem ser None

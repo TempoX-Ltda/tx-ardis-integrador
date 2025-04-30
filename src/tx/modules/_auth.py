@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from src.tx.exceptions import CannotLoginError
 from src.tx.utils.commons import SuccessResponse
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.tx.modules._auth")
 
 
 class LoginReturn(BaseModel):

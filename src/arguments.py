@@ -47,6 +47,25 @@ subparsers = parser.add_subparsers(
     required=True,
 )
 
+# Apontar Plano de Corte
+apontar_plano_de_corte_parser = subparsers.add_parser(
+    "apontar-plano-de-corte",
+    help="Aponta plano de corte no MES",
+)
+apontar_plano_de_corte_parser.add_argument(
+    "--cod-layout",
+    type=str,
+    help="Codigo do layout que será apontado",
+    required=True,
+)
+apontar_plano_de_corte_parser.add_argument(
+    "--tipo-apontamento",
+    type=str,
+    help="Tipo do apontamento",
+    choices=["INICIO_OU_FIM", "INICIO_E_FIM"],
+    required=True,
+)
+
 # Novo Plano de Corte
 novo_plano_de_corte_parser = subparsers.add_parser(
     "novo-plano-de-corte",

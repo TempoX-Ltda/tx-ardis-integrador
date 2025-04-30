@@ -1,0 +1,14 @@
+<CycleFile>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="_01_15BETON.nc" />
+    <Field Name="LabelName" Value="Label__01_15BETON.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="0" />
+    <Field Name="WorkIndex" Value="20250430_0911" />
+  </Cycle>
+</CycleFile>

@@ -8,7 +8,7 @@ from src.tx.modules.cliente import Cliente
 from src.tx.modules.plano_de_corte import PlanoDeCorte
 from src.utils import get_version
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.tx.tx")
 
 
 class Tx:

@@ -15,7 +15,7 @@ from src.tx.modules.cliente.types import (
 )
 from src.tx.tx import Tx
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.subcommands.nova_ordem")
 
 
 def detect_dialect(text: str):

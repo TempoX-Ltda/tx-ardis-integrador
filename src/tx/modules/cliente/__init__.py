@@ -8,7 +8,7 @@ from src.tx.modules.cliente.types import NovaOrdemRoteiroEIdUnico
 from src.tx.utils.commons import SuccessResponse
 from src.utils import handle_http_error
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.tx.modules.cliente")
 
 
 class Cliente:

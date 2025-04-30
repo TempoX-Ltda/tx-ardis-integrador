@@ -7,6 +7,7 @@ from argparse import Namespace
 from logging.handlers import RotatingFileHandler
 
 from src.arguments import parse_args
+from src.subcommands.apontar_plano_de_corte import apontar_plano_de_corte_subcommand
 from src.subcommands.nova_ordem import nova_ordem_subcommand
 from src.subcommands.novo_plano_de_corte import novo_plano_de_corte_subcommand
 
@@ -37,7 +38,7 @@ def setup_logger(parsed_args: Namespace):
         "%(asctime)s,%(msecs)d | %(name)s | %(levelname)s | %(message)s"
     )
 
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("src")
     logger.setLevel(logging.DEBUG)
 
     file_log_handler = RotatingFileHandler(
@@ -63,6 +64,10 @@ def main(parsed_args: Namespace):
 
     elif parsed_args.subcommand == "nova-ordem":
         nova_ordem_subcommand(parsed_args)
+        return
+
+    elif parsed_args.subcommand == "apontar-plano-de-corte":
+        apontar_plano_de_corte_subcommand(parsed_args)
         return
 
     # Subcomando não implementado

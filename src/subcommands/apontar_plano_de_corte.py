@@ -23,7 +23,7 @@ from src.tx.modules.plano_de_corte.types import (
 )
 from src.tx.tx import Tx
 
-logger = logging.getLogger("src.subcommands.novo_plano_de_corte")
+logger = logging.getLogger("src.subcommands.apontar_plano_de_corte")
 
 
 def coerce_nan_to_none(x: Any) -> Any:
@@ -187,8 +187,8 @@ def parse_files(parsed_args: Namespace):
     return planos
 
 
-def novo_plano_de_corte_subcommand(parsed_args: Namespace):
-    logger.info("Iniciando envio de arquivos para o MES")
+def apontar_plano_de_corte_subcommand(parsed_args: Namespace):
+    logger.info("Iniciando apontamento dos planos no MES...")
 
     tx = Tx(
         base_url=parsed_args.host,
@@ -197,9 +197,14 @@ def novo_plano_de_corte_subcommand(parsed_args: Namespace):
         default_timeout=Timeout(parsed_args.timeout),
     )
 
-    # Carrega os arquivos
-    planos = parse_files(parsed_args)
+    tx.plano_de_corte.apontar(
+        codigo_layout=parsed_args.cod_layout,
+    )
 
-    tx.plano_de_corte.novo_projeto(planos)
+    if parsed_args.tipo_apontamento == "INICIO_E_FIM":
+        logger.info("Apontando o fim do plano de corte...")
+        tx.plano_de_corte.apontar(
+            codigo_layout=parsed_args.cod_layout,
+        )
 
-    logger.info("Envio finalizado!")
+    logger.info("Apontamento realizado com sucesso!")

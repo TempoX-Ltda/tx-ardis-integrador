@@ -65,6 +65,24 @@ apontar_plano_de_corte_parser.add_argument(
     choices=["INICIO_OU_FIM", "INICIO_E_FIM"],
     required=True,
 )
+# Apontar Plano de Corte NANXING
+apontar_plano_de_corte_nanxing_parser = subparsers.add_parser(
+    "apontar-plano-de-corte-nanxing",
+    help="Aponta plano de corte da Nanxing no MES",
+)
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--caminho-arquivo",
+    type=str,
+    help="Caminho do arquivo que contem a informacao de apontamento, geralmente encontrado em: D:\Network\Cnc\GNcFiles\NClist.xml", # type: ignore
+    required=True,
+)
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--tipo-apontamento",
+    type=str,
+    help="Tipo do apontamento",
+    choices=["INICIO_OU_FIM", "INICIO_E_FIM"],
+    required=True,
+)
 
 # Novo Plano de Corte
 novo_plano_de_corte_parser = subparsers.add_parser(

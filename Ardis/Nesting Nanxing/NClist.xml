@@ -1,7 +1,43 @@
 <CycleFile>
   <Cycle Name="Cycle_List">
-    <Field Name="PlateID" Value="_01_15BETON.nc" />
-    <Field Name="LabelName" Value="Label__01_15BETON.cyc" />
+    <Field Name="PlateID" Value="5943I45389L3-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_13_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="0" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="4" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="5943I45389L5-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_14_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="0" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="4" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="5943I45389L11-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_15_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="4" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="ASTCI45383L5-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_16_15BRANCOTX.cyc" />
     <Field Name="LargeImage" Value="" />
     <Field Name="Color" Value="" />
     <Field Name="Thickness" Value="" />
@@ -9,6 +45,54 @@
     <Field Name="RepeatTimes" Value="1" />
     <Field Name="Station" Value="1" />
     <Field Name="PanelState" Value="0" />
-    <Field Name="WorkIndex" Value="20250430_0911" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="ASTCI45383L5-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_17_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="0" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="5943I45389L10-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_18_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="0" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="RETRI45384L2-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_19_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="0" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="ASTCI45383L6-.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_20_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="0" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
   </Cycle>
 </CycleFile>

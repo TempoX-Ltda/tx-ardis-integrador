@@ -51,5 +51,26 @@
             "console": "internalConsole",
             "justMyCode": true
         },
+        {
+            "name": "Python: apontar-plano-de-corte-nanxing",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main",
+            "args": [
+                "--host",
+                "http://demo.mes.tempox.com.br/api/",
+                "-u",
+                "admin",
+                "-p",
+                "qwe123",
+                "apontar-plano-de-corte-nanxing",
+                "--caminho-arquivo",
+                "/workspaces/tx-ardis-integrador/Ardis/Nesting Nanxing/NClist.xml",
+                "--tipo-apontamento", 
+                "INICIO_E_FIM"
+            ],
+            "console": "internalConsole",
+            "justMyCode": true
+        },
     ]
 }

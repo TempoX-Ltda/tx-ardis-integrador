@@ -1,0 +1,3 @@
+﻿Username,PanelID,Date,Start,End,FeedPanelEnd,FeedTime,Duration,Size,ProcessSide,Area,HoleCount,GrooveCount,MillCount,WorkArea,PositioningEnd,PositioningTime
+,GAV00043639A,2025/05/01,00:00:46,00:01:07,00:00:48,1.560,18.782,688 x 275.5 x 15.3,XY1,.190,6,0,0,Default,00:00:47,.702
+,GAV00043625A,2025/05/01,00:01:16,00:01:38,00:01:18,1.435,19.968,820 x 235.5 x 15.3,XY1,.193,6,0,0,Default,00:01:17,.936

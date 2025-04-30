@@ -1,9 +1,10 @@
 import logging
 import os
-from argparse import Namespace
 import time
-from httpx import Timeout
 import xml.etree.ElementTree as ET
+from argparse import Namespace
+
+from httpx import Timeout
 
 from src.tx.tx import Tx
 
@@ -41,7 +42,7 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento):
             logger.info(f"Apontamento do plano {plate_id} realizado com sucesso.")
             layouts_apontados.add(plate_id)
         except Exception as e:
-            if 'já está finalizado' in str(e):
+            if "já está finalizado" in str(e):
                 layouts_apontados.add(plate_id)
             else:
                 logger.error(f"Erro ao apontar plano {plate_id}: {e}")
@@ -65,7 +66,9 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
         time.sleep(1)
 
         if not os.path.exists(caminho_xml):
-            logger.warning(f"Arquivo {caminho_xml} não encontrado. Aguardando 10 segundos...")
+            logger.warning(
+                f"Arquivo {caminho_xml} não encontrado. Aguardando 10 segundos..."
+            )
             time.sleep(10)
             continue
 

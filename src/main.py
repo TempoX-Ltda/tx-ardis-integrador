@@ -7,6 +7,7 @@ from argparse import Namespace
 from logging.handlers import RotatingFileHandler
 
 from src.arguments import parse_args
+from src.subcommands.apontar_leitura_furadeira_scm_pratika import apontar_leitura_furadeira_scm_pratika_subcommand
 from src.subcommands.apontar_plano_de_corte import apontar_plano_de_corte_subcommand
 from src.subcommands.apontar_plano_de_corte_nanxing import apontar_plano_de_corte_nanxing_subcommand
 from src.subcommands.nova_ordem import nova_ordem_subcommand
@@ -74,6 +75,10 @@ def main(parsed_args: Namespace):
     elif parsed_args.subcommand == "apontar-plano-de-corte-nanxing":
         apontar_plano_de_corte_nanxing_subcommand(parsed_args)
         return
+    
+    elif parsed_args.subcommand == "apontar-leitura-furadeira-scm-pratika":
+        apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args)
+        return 
 
     # Subcomando não implementado
     raise NotImplementedError(f"Subcomando {parsed_args.subcommand} não implementado")

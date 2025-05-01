@@ -5,6 +5,7 @@ import httpx
 from src.tx.exceptions import CannotLoginError
 from src.tx.modules._auth import login
 from src.tx.modules.cliente import Cliente
+from src.tx.modules.leituras import Leitura
 from src.tx.modules.plano_de_corte import PlanoDeCorte
 from src.utils import get_version
 
@@ -49,3 +50,4 @@ class Tx:
         # submodules
         self.plano_de_corte = PlanoDeCorte(self.client)
         self.cliente = Cliente(self.client)
+        self.leitura = Leitura(self.client)

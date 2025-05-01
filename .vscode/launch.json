@@ -52,6 +52,27 @@
             "justMyCode": true
         },
         {
+            "name": "Python: apontar-leitura-furadeira-scm-pratika",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main",
+            "args": [
+                "--host",
+                "http://demo.mes.tempox.com.br/api/",
+                "-u",
+                "admin",
+                "-p",
+                "qwe123",
+                "apontar-leitura-furadeira-scm-pratika",
+                "--caminho-arquivo",
+                "/workspaces/tx-ardis-integrador/Ardis/Furadeira Nanxing/",
+                "--tipo-apontamento", 
+                "INICIO_E_FIM"
+            ],
+            "console": "internalConsole",
+            "justMyCode": true
+        },
+        {
             "name": "Python: apontar-plano-de-corte-nanxing",
             "type": "python",
             "request": "launch",

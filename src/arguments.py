@@ -84,6 +84,25 @@ apontar_plano_de_corte_nanxing_parser.add_argument(
     required=True,
 )
 
+# Apontar Leitura furadeira 
+apontar_plano_de_corte_nanxing_parser = subparsers.add_parser(
+    "apontar-leitura-furadeira-scm-pratika",
+    help="Aponta leitura da furaneira SCM Pratika",
+)
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--caminho-arquivo",
+    type=str,
+    help="Caminho do arquivo que contem a informacao de leitura, geralmente encontrado em: D:\Network\Cnc\GNcFiles\NClist.xml", # type: ignore
+    required=True,
+)
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--id-recurso",
+    type=int,
+    help="numero de identificacao da maquina no MES", 
+    required=True,
+)
+
+
 # Novo Plano de Corte
 novo_plano_de_corte_parser = subparsers.add_parser(
     "novo-plano-de-corte",

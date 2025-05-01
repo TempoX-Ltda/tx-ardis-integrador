@@ -1,26 +1,8 @@
-import base64
 import logging
-import os
 from argparse import Namespace
-from math import isnan
-from typing import Any, List, Optional
 
 from httpx import Timeout
-from pandas import read_csv
-from pydantic import (
-    BaseModel,
-    BeforeValidator,
-    ConfigDict,
-    ValidationError,
-    model_validator,
-)
-from typing_extensions import Annotated
 
-from src.tx.modules.plano_de_corte.types import (
-    PlanoDeCorteCreateModel,
-    PlanoDeCortePecasCreateModel,
-    TipoMateriaPrima,
-)
 from src.tx.tx import Tx
 
 logger = logging.getLogger("src.subcommands.apontar_plano_de_corte")

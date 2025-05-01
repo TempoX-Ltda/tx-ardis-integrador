@@ -1,9 +1,10 @@
 import csv
 import logging
 import time
-from pathlib import Path
-from httpx import Timeout
 from argparse import Namespace
+from pathlib import Path
+
+from httpx import Timeout
 
 from src.tx.modules.leituras.types import LeiturasPost
 from src.tx.tx import Tx
@@ -64,7 +65,9 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
                         nome_arquivo = path.stem
 
                         if not nome_arquivo:
-                            logger.warning(f"Nome do arquivo inválido na linha: {linha}")
+                            logger.warning(
+                                f"Nome do arquivo inválido na linha: {linha}"
+                            )
                             continue
 
                         logger.info(f"Enviando leitura para API: {nome_arquivo}")
@@ -73,7 +76,7 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
                             id_recurso=parsed_args.id_recurso,
                             codigo=nome_arquivo,
                             qtd=parsed_args.qtd,
-                            leitura_manual=False
+                            leitura_manual=False,
                         )
 
                         tx.leitura.nova_leitura(

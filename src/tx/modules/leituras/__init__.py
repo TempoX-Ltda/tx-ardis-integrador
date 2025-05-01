@@ -19,7 +19,9 @@ class Leitura:
         qtd: int,
         leitura_manual: bool,
     ):
-        logger.info(f"Enviando leitura para a API: código={codigo}, qtd={qtd}, leitura_manual={leitura_manual}")
+        logger.info(
+            f"Enviando leitura para a API: código={codigo}, qtd={qtd}, leitura_manual={leitura_manual}"
+        )
 
         body = {
             "id_recurso": id_recurso,

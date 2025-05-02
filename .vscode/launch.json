@@ -73,6 +73,27 @@
             "justMyCode": true
         },
         {
+            "name": "Python: apontar-furadeira-leitura-scm-pratika",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main",
+            "args": [
+                "--host",
+                "http://192.168.0.115:6543",
+                "-u",
+                "admin",
+                "-p",
+                "qwe123",
+                "apontar-furadeira-leitura-scm-pratika",
+                "--caminho-arquivo",
+                "/workspaces/tx-ardis-integrador/Ardis/Furadeira SCM Pratika/",
+                "--id-recurso", 
+                "12"
+            ],
+            "console": "internalConsole",
+            "justMyCode": true
+        },
+        {
             "name": "Python: apontar-plano-de-corte-nanxing",
             "type": "python",
             "request": "launch",

@@ -102,6 +102,23 @@ apontar_leitura_furadeira_nanxing_parser.add_argument(
     required=True,
 )
 
+# Apontar Leitura furadeira scm parser
+apontar_leitura_furadeira_scm_pratika_parser = subparsers.add_parser(
+    "apontar-furadeira-leitura-scm-pratika",
+    help="Aponta leitura da furaneira SCM PRATIKA",
+)
+apontar_leitura_furadeira_scm_pratika_parser.add_argument(
+    "--caminho-arquivo",
+    type=str,
+    help="Caminho do arquivo que contem a informacao de leitura, geralmente encontrado em: D:\\Network\\Cnc\\GNcFiles\\NClist.xml",
+    required=True,
+)
+apontar_leitura_furadeira_scm_pratika_parser.add_argument(
+    "--id-recurso",
+    type=int,
+    help="numero de identificacao da maquina no MES",
+    required=True,
+)
 
 # Novo Plano de Corte
 novo_plano_de_corte_parser = subparsers.add_parser(

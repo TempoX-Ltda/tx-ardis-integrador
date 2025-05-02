@@ -4,7 +4,6 @@ import time
 from argparse import Namespace
 from pathlib import Path
 
-from httpx import Timeout
 
 from src.tx.modules.leituras.types import LeiturasPost
 from src.tx.tx import Tx

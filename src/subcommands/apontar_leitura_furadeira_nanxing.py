@@ -9,16 +9,17 @@ from httpx import Timeout
 from src.tx.modules.leituras.types import LeiturasPost
 from src.tx.tx import Tx
 
-logger = logging.getLogger("src.subcommands.apontar_leitura_furadeira_scm_pratika")
-
+logger = logging.getLogger("src.subcommands.apontar_leitura_furadeira_nanxing")
 
 def obter_ultimo_csv(diretorio: Path) -> Path:
-    arquivos_csv = list(diretorio.glob("*.csv"))
+    arquivos_csv = [
+        p for p in diretorio.glob("*.csv")
+        if "_PROCESSADO_TEMPOX" not in p.stem
+    ]
     if not arquivos_csv:
         raise FileNotFoundError("Nenhum arquivo CSV encontrado.")
 
     return max(arquivos_csv, key=lambda p: p.stat().st_mtime)
-
 
 def carregar_linhas_processadas(arquivo_processado: Path) -> set:
     if not arquivo_processado.exists():
@@ -29,17 +30,16 @@ def carregar_linhas_processadas(arquivo_processado: Path) -> set:
         return set(tuple(row) for row in reader)
 
 
-def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
-    diretorio = Path(parsed_args.diretorio_csv)
-    timeout = Timeout(parsed_args.timeout)
-
+def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
+    logger.info("Iniciando leitura dos planos no MES...")
     tx = Tx(
         base_url=parsed_args.host,
         user=parsed_args.user,
         password=parsed_args.password,
-        default_timeout=timeout,
+        default_timeout=parsed_args.timeout,
     )
 
+    diretorio = Path(parsed_args.caminho_arquivo)
     while True:
         try:
             csv_entrada = obter_ultimo_csv(diretorio)
@@ -62,20 +62,20 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
 
                     try:
                         path = Path(linha[1])
-                        nome_arquivo = path.stem
+                        ord = path.stem
 
-                        if not nome_arquivo:
+                        if not ord:
                             logger.warning(
-                                f"Nome do arquivo inválido na linha: {linha}"
+                                f"ORD inválida na linha: {linha}"
                             )
                             continue
 
-                        logger.info(f"Enviando leitura para API: {nome_arquivo}")
+                        logger.info(f"Enviando leitura para API: {ord}")
 
                         leitura = LeiturasPost(
                             id_recurso=parsed_args.id_recurso,
-                            codigo=nome_arquivo,
-                            qtd=parsed_args.qtd,
+                            codigo=ord,
+                            qtd=1,
                             leitura_manual=False,
                         )
 

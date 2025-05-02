@@ -1,6 +1,6 @@
 import logging
 
-from httpx import HTTPStatusError
+from httpx import Client, HTTPStatusError
 
 from src.tx.utils.commons import SuccessResponse
 from src.utils import handle_http_error
@@ -9,7 +9,7 @@ logger = logging.getLogger("src.tx.modules.leituras")
 
 
 class Leitura:
-    def __init__(self, client):
+    def __init__(self, client: Client):
         self.client = client
 
     def nova_leitura(

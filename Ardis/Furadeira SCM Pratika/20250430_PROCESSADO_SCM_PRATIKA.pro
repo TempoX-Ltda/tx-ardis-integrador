@@ -1,1 +1,0 @@
-/workspaces/tx-ardis-integrador/Ardis/Furadeira SCM Pratika/20250430.pro,ORD12045057#185540790,ORD12045057#185540791,ORD12045057#185540792

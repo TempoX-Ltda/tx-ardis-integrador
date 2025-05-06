@@ -1,8 +1,11 @@
 import csv
 import logging
+import os
+import re
 import time
 from argparse import Namespace
 from pathlib import Path
+from typing import Optional
 
 from src.tx.modules.leituras.types import LeiturasPost
 from src.tx.tx import Tx
@@ -30,6 +33,22 @@ def carregar_linhas_processadas_scm_pratika(arquivo_processado: Path) -> set:
         return set(tuple(row) for row in reader)
 
 
+
+def extrair_codigos_ordem(arquivo_pro: Path) -> list:
+    padrao_ordem = re.compile(r"ORD\d+#\d+")
+    codigos_ordem = []
+    
+    with arquivo_pro.open("r", encoding="utf-8") as f:
+        for linha in f:
+            if ".PGM" in linha.upper():
+                match = padrao_ordem.search(linha)
+                if match:
+                    codigos_ordem.append(match.group(0))  # Adiciona o código encontrado à lista
+                    
+    return codigos_ordem
+
+
+
 def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
     logger.info("Iniciando leitura dos planos da furadeira SCM Pratika...")
 
@@ -43,9 +62,10 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
     diretorio = Path(parsed_args.caminho_arquivo)
 
     while True:
+        time.sleep(5)
         try:
             arquivo_pro = obter_ultimo_pro(diretorio)
-            nome_processado = arquivo_pro.stem + "_PROCESSADO_SCM_PRATIKA.csv"
+            nome_processado = arquivo_pro.stem + "_PROCESSADO_SCM_PRATIKA.pro"
             caminho_processado = arquivo_pro.with_name(nome_processado)
 
             linhas_processadas = carregar_linhas_processadas_scm_pratika(caminho_processado)
@@ -57,30 +77,31 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
                 continue
 
             try:
-                codigo_ordem = arquivo_pro.stem
-                if not codigo_ordem:
-                    logger.warning(f"Código de ordem inválido: {arquivo_pro.name}")
+                codigos_ordem = extrair_codigos_ordem(arquivo_pro)
+                if not codigos_ordem:
+                    logger.warning(f"Não foi possível extrair códigos de ordem do arquivo: {arquivo_pro.name}")
                     continue
 
-                logger.info(f"Enviando leitura para API: {codigo_ordem}")
+                for codigo_ordem in codigos_ordem:
+                    logger.info(f"Enviando leitura para API: {codigo_ordem}")
 
-                leitura = LeiturasPost(
-                    id_recurso=parsed_args.id_recurso,
-                    codigo=codigo_ordem,
-                    qtd=1,
-                    leitura_manual=False,
-                )
+                    leitura = LeiturasPost(
+                        id_recurso=parsed_args.id_recurso,
+                        codigo=codigo_ordem,
+                        qtd=1,
+                        leitura_manual=False,
+                    )
 
-                tx.leitura.nova_leitura(
-                    id_recurso=leitura.id_recurso,
-                    codigo=leitura.codigo,
-                    qtd=leitura.qtd,
-                    leitura_manual=leitura.leitura_manual,
-                )
+                    tx.leitura.nova_leitura(
+                        id_recurso=leitura.id_recurso,
+                        codigo=leitura.codigo,
+                        qtd=leitura.qtd,
+                        leitura_manual=leitura.leitura_manual,
+                    )
 
-                with caminho_processado.open("a", newline="", encoding="utf-8") as f_out:
-                    writer = csv.writer(f_out)
-                    writer.writerow(linha_atual)
+                    with caminho_processado.open("a", newline="", encoding="utf-8") as f_out:
+                        writer = csv.writer(f_out)
+                        writer.writerow(linha_atual)
 
                 logger.info(f"Arquivo processado com sucesso: {arquivo_pro.name}")
 

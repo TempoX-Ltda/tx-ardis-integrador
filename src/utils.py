@@ -29,10 +29,6 @@ def handle_http_error(exc: HTTPStatusError):
 
     return message
 
+
 def mostrar_toast(titulo: str, mensagem: str):
-    if callable(notification):
-        notification(
-            title=titulo,
-            message=mensagem,
-            timeout=5
-        )
+    notification.notify(title=titulo, message=mensagem, timeout=5)

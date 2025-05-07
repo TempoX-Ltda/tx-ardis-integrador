@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from httpx import HTTPStatusError
+from plyer import notification
 
 
 def get_version():
@@ -27,3 +28,11 @@ def handle_http_error(exc: HTTPStatusError):
     )
 
     return message
+
+def mostrar_toast(titulo: str, mensagem: str):
+    if callable(notification):
+        notification(
+            title=titulo,
+            message=mensagem,
+            timeout=5
+        )

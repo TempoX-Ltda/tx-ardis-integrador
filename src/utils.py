@@ -31,4 +31,4 @@ def handle_http_error(exc: HTTPStatusError):
 
 
 def mostrar_toast(titulo: str, mensagem: str):
-    notification.notify(title=titulo, message=mensagem, timeout=5)
+    notification.notify(title=titulo, message=mensagem, timeout=5) # type: ignore funciona mas da erro

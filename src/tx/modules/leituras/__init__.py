@@ -3,7 +3,7 @@ import logging
 from httpx import Client, HTTPStatusError
 
 from src.tx.utils.commons import SuccessResponse
-from src.utils import handle_http_error
+from src.utils import handle_http_error, mostrar_toast
 
 logger = logging.getLogger("src.tx.modules.leituras")
 
@@ -35,9 +35,11 @@ class Leitura:
             response.raise_for_status()
         except Exception as exc:
             message = "Erro ao enviar dados para a API"
+            mostrar_toast(titulo="TempoX", mensagem=f"Erro ao apontar o codigo: {codigo} no MES")
             if isinstance(exc, HTTPStatusError):
                 message = handle_http_error(exc)
             logger.error(f"{message}: {exc}")
             raise Exception(message) from exc
 
+        mostrar_toast(titulo="TempoX", mensagem=f"Codigo {codigo}, apontado com sucesso")
         return SuccessResponse(**response.json()).retorno

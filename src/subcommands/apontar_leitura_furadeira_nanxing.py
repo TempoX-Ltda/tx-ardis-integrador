@@ -18,7 +18,6 @@ def obter_ultimo_csv(diretorio: Path):
         if "_PROCESSADO_TEMPOX" not in p.stem and "_COM_ERRO_TEMPOX" not in p.stem
     ]
     if not arquivos_csv:
-        mostrar_toast(titulo="TempoX", mensagem="Nenhum arquivo CSV encontrado.")
         raise FileNotFoundError("Nenhum arquivo CSV encontrado.")
 
     return max(arquivos_csv, key=lambda p: p.stat().st_mtime)
@@ -98,7 +97,6 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                         continue
 
                     logger.info(f"Enviando leitura para API: {ord}")
-                    mostrar_toast(titulo="TempoX", mensagem=f"Enviando leitura para API: {ord}")
 
 
                     leitura = LeiturasPost(
@@ -119,7 +117,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                         writer_arquivo_processado = csv.writer(f_out)
                         writer_arquivo_processado.writerow(linha)
                         logger.info(f"Linha processada com sucesso: {linha}")
-                        mostrar_toast(titulo="TempoX", mensagem=f"Linha processada com sucesso: {linha}")
+                        
 
 
                 except Exception as e:
@@ -128,9 +126,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                         writer_arquivo_com_erro = csv.writer(f_out)
                         writer_arquivo_com_erro.writerow(linha)
                         logger.info(f"Adicionando linha com erro no arquivo de erros: {linha}")
-                        mostrar_toast(titulo="TempoX", mensagem=f"Adicionando linha com erro no arquivo de erros: {linha}")
-
-
+                       
         except Exception as erro:
             logger.error(f"Erro no processamento: {erro}")
             mostrar_toast(titulo="TempoX", mensagem=f"Erro no processamento: {erro}")

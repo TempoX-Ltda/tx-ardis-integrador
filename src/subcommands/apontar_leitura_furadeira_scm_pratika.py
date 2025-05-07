@@ -7,6 +7,7 @@ from pathlib import Path
 
 from src.tx.modules.leituras.types import LeiturasPost
 from src.tx.tx import Tx
+from src.utils import mostrar_toast
 
 logger = logging.getLogger("src.subcommands.apontar_leitura_furadeira_scm_pratika")
 
@@ -48,6 +49,8 @@ def carregar_linhas_com_erro(arquivo_com_erro: Path):
 
 def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
     logger.info("Iniciando processo de apontamento de leituras no MES...")
+    mostrar_toast(titulo="TempoX", mensagem="Iniciando processo de apontamento de leituras no MES...")
+
     tx = Tx(
         base_url=parsed_args.host,
         user=parsed_args.user,
@@ -57,7 +60,6 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
 
     diretorio = Path(parsed_args.caminho_arquivo)
     while True:
-        logger.info("Aguardando próximo ciclo (1 segundos)...")
         time.sleep(1)
         try:
             csv_entrada = obter_ultimo_csv(diretorio)
@@ -125,6 +127,8 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
 
         except Exception as erro:
             logger.error(f"Erro no processamento: {erro}")
+            mostrar_toast(titulo="TempoX", mensagem=f"Erro no processamento: {erro}")
+
 
         logger.info("Aguardando próximo ciclo (5 segundos)...")
         time.sleep(5)

@@ -84,7 +84,7 @@ def main(parsed_args: Namespace):
         apontar_leitura_furadeira_nanxing_subcommand(parsed_args)
         return
     
-    elif parsed_args.subcommand == "apontar-furadeira-leitura-scm-pratika":
+    elif parsed_args.subcommand == "apontar-leitura-furadeira-scm-pratika":
         apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args)
         return
 

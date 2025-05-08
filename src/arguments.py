@@ -102,9 +102,9 @@ apontar_leitura_furadeira_nanxing_parser.add_argument(
     required=True,
 )
 
-# Apontar Leitura furadeira scm parser
+# Apontar Leitura furadeira scm pratika
 apontar_leitura_furadeira_scm_pratika_parser = subparsers.add_parser(
-    "apontar-furadeira-leitura-scm-pratika",
+    "apontar-leitura-furadeira-scm-pratika",
     help="Aponta leitura da furaneira SCM PRATIKA",
 )
 apontar_leitura_furadeira_scm_pratika_parser.add_argument(

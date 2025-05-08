@@ -83,6 +83,12 @@ apontar_plano_de_corte_nanxing_parser.add_argument(
     choices=["INICIO_OU_FIM", "INICIO_E_FIM"],
     required=True,
 )
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--caminho-arquivo-tempox",
+    type=str,
+    help="Caminho do arquivo que contem a informacao de apontamento, da tempox.tx",
+    required=True,
+)
 
 # Apontar Leitura furadeira Nanxing
 apontar_leitura_furadeira_nanxing_parser = subparsers.add_parser(

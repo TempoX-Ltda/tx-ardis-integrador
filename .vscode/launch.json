@@ -109,7 +109,9 @@
                 "--caminho-arquivo",
                 "/workspaces/tx-ardis-integrador/Ardis/Nesting Nanxing/NClist.xml",
                 "--tipo-apontamento", 
-                "INICIO_E_FIM"
+                "INICIO_E_FIM",
+                "--caminho-arquivo-tempox", 
+                "/workspaces/tx-ardis-integrador/Ardis/Nesting Nanxing/arquivo_tempox"
             ],
             "console": "internalConsole",
             "justMyCode": true

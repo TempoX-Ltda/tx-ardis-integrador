@@ -26,26 +26,58 @@ def extrair_dados_cycle(cycle):
     return plate_id, panel_state
 
 
-def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento):
+def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_pasta_tx):
     plate_id, panel_state = extrair_dados_cycle(cycle)
     logger.debug(f"Cycle com PlateID={plate_id}, PanelState={panel_state}")
 
     if panel_state == "4" and plate_id and plate_id not in layouts_apontados:
-        logger.info(f"Apontando plano de corte: {plate_id}")
+        caminho_arquivo_tx = os.path.join(caminho_pasta_tx, f"{plate_id}.tx")
+        caminho_arquivo_erro = os.path.join(caminho_pasta_tx, f"{plate_id}_COM_ERRO.tx")
+
+        # Verifica se já existe arquivo com erro
+        if os.path.exists(caminho_arquivo_erro):
+            logger.warning(f"Plano {plate_id} já teve erro anteriormente. Ignorando apontamento.")
+            return
+
+        if not os.path.exists(caminho_arquivo_tx):
+            logger.warning(f"Arquivo {caminho_arquivo_tx} não encontrado. Ignorando...")
+            return
+
         try:
-            tx.plano_de_corte.apontar(codigo_layout=plate_id)
-            # Aguarda 2 segundos para o plano não ficar com tempo zerado
+            with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:
+                primeira_linha = f.readline().strip()
+        except Exception as e:
+            logger.error(f"Erro ao ler {caminho_arquivo_tx}: {e}")
+            return
+
+        if not primeira_linha:
+            logger.warning(f"Arquivo {caminho_arquivo_tx} está vazio. Ignorando...")
+            return
+
+        logger.info(f"Apontando plano de corte com layout: {primeira_linha}")
+        try:
+            tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
             time.sleep(2)
             if tipo_apontamento == "INICIO_E_FIM":
-                logger.info(f"Apontando fim do plano de corte: {plate_id}")
-                tx.plano_de_corte.apontar(codigo_layout=plate_id)
-            logger.info(f"Apontamento do plano {plate_id} realizado com sucesso.")
+                logger.info(f"Apontando fim do plano de corte: {primeira_linha}")
+                tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+            logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
             layouts_apontados.add(plate_id)
         except Exception as e:
             if "já está finalizado" in str(e):
                 layouts_apontados.add(plate_id)
             else:
-                logger.error(f"Erro ao apontar plano {plate_id}: {e}")
+                logger.error(f"Erro ao apontar plano {primeira_linha}: {e}")
+                try:
+                    os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
+                    logger.info(f"Arquivo renomeado para {caminho_arquivo_erro} devido a erro.")
+                    # Escreve o erro dentro do arquivo
+                    with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
+                        f.write("\n")
+                        f.write(f"ERRO: {e}")
+                except Exception as erro_renomear:
+                    logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
+
 
 
 def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
@@ -59,6 +91,7 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
 
     caminho_xml = parsed_args.caminho_arquivo
     tipo_apontamento = parsed_args.tipo_apontamento
+    caminho_arquivo = parsed_args.caminho_arquivo_tempox
     layouts_apontados = set()
 
     while True:
@@ -81,4 +114,4 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
             continue
 
         for cycle in root.findall(".//Cycle"):
-            processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento)
+            processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_arquivo)

@@ -33,10 +33,12 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
     if panel_state == "4" and plate_id and plate_id not in layouts_apontados:
         caminho_arquivo_tx = os.path.join(caminho_pasta_tx, f"{plate_id}.tx")
         caminho_arquivo_erro = os.path.join(caminho_pasta_tx, f"{plate_id}_COM_ERRO.tx")
+        caminho_arquivo_apontado = os.path.join(caminho_pasta_tx, f"{plate_id}_APONTADO.tx")
 
-        # Verifica se já existe arquivo com erro
+        if os.path.exists(caminho_arquivo_apontado):
+            return
+
         if os.path.exists(caminho_arquivo_erro):
-            logger.warning(f"Plano {plate_id} já teve erro anteriormente. Ignorando apontamento.")
             return
 
         if not os.path.exists(caminho_arquivo_tx):
@@ -63,6 +65,9 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                 tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
             logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
             layouts_apontados.add(plate_id)
+
+            os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
+            logger.info(f"Arquivo renomeado para {caminho_arquivo_apontado} após apontamento bem-sucedido.")
         except Exception as e:
             if "já está finalizado" in str(e):
                 layouts_apontados.add(plate_id)
@@ -71,7 +76,6 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                 try:
                     os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
                     logger.info(f"Arquivo renomeado para {caminho_arquivo_erro} devido a erro.")
-                    # Escreve o erro dentro do arquivo
                     with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
                         f.write("\n")
                         f.write(f"ERRO: {e}")

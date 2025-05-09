@@ -116,5 +116,28 @@
             "console": "internalConsole",
             "justMyCode": true
         },
+        {
+            "name": "Python: novo-plano-de-corte",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main",
+            "args": [
+                "--host",
+                "http://demo.mes.tempox.com.br/api/",
+                "-u",
+                "admin",
+                "-p",
+                "qwe123",
+                "novo-plano-de-corte",
+                "--layouts-file",
+                "C:\\Github\\tx-ardis-integrador\\Ardis\\novo-plano-de-corte\\plano_de_corte.csv",
+                "--parts-file", 
+                "C:\\Github\\tx-ardis-integrador\\Ardis\\novo-plano-de-corte\\plano_de_corte_pecas.csv",
+                "--sep", 
+                ";",
+            ],
+            "console": "internalConsole",
+            "justMyCode": true
+        },
     ]
 }

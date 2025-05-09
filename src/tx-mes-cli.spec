@@ -2,6 +2,7 @@
 
 datas = [
     ('./version', './src/'),
+    ('./icone_tx.ico', './src/'),
     ('tx', 'tx'),
     ('subcommands', 'subcommands'),
 ]
@@ -11,7 +12,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=datas,
-    hiddenimports=['plyer.platforms.win.notification'],
+    hiddenimports=[],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -39,4 +40,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='./icone_tx.ico',
 )

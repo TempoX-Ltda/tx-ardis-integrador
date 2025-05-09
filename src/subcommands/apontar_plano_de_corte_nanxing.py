@@ -33,7 +33,9 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
     if panel_state == "4" and plate_id and plate_id not in layouts_apontados:
         caminho_arquivo_tx = os.path.join(caminho_pasta_tx, f"{plate_id}.tx")
         caminho_arquivo_erro = os.path.join(caminho_pasta_tx, f"{plate_id}_COM_ERRO.tx")
-        caminho_arquivo_apontado = os.path.join(caminho_pasta_tx, f"{plate_id}_APONTADO.tx")
+        caminho_arquivo_apontado = os.path.join(
+            caminho_pasta_tx, f"{plate_id}_APONTADO.tx"
+        )
 
         if os.path.exists(caminho_arquivo_apontado):
             return
@@ -59,7 +61,7 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
         logger.info(f"Apontando plano de corte com layout: {primeira_linha}")
         try:
             tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
-            time.sleep(2)
+            time.sleep(2)  # espera 2 segundos para dar um tempo par ao layout
             if tipo_apontamento == "INICIO_E_FIM":
                 logger.info(f"Apontando fim do plano de corte: {primeira_linha}")
                 tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
@@ -67,7 +69,9 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
             layouts_apontados.add(plate_id)
 
             os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
-            logger.info(f"Arquivo renomeado para {caminho_arquivo_apontado} após apontamento bem-sucedido.")
+            logger.info(
+                f"Arquivo renomeado para {caminho_arquivo_apontado} após apontamento bem-sucedido."
+            )
         except Exception as e:
             if "já está finalizado" in str(e):
                 layouts_apontados.add(plate_id)
@@ -75,13 +79,16 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                 logger.error(f"Erro ao apontar plano {primeira_linha}: {e}")
                 try:
                     os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
-                    logger.info(f"Arquivo renomeado para {caminho_arquivo_erro} devido a erro.")
+                    logger.info(
+                        f"Arquivo renomeado para {caminho_arquivo_erro} devido a erro."
+                    )
                     with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
                         f.write("\n")
                         f.write(f"ERRO: {e}")
                 except Exception as erro_renomear:
-                    logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
-
+                    logger.error(
+                        f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}"
+                    )
 
 
 def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
@@ -99,8 +106,8 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
     layouts_apontados = set()
 
     while True:
-        logger.info("Aguardando 1 segundo.")
-        time.sleep(1)
+        logger.info("Aguardando 30 segundos.")
+        time.sleep(30)
 
         if not os.path.exists(caminho_xml):
             logger.warning(
@@ -118,4 +125,6 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
             continue
 
         for cycle in root.findall(".//Cycle"):
-            processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_arquivo)
+            processar_cycle(
+                cycle, layouts_apontados, tx, tipo_apontamento, caminho_arquivo
+            )

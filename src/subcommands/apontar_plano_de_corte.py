@@ -1,4 +1,5 @@
 import logging
+import time
 from argparse import Namespace
 
 from httpx import Timeout
@@ -23,6 +24,8 @@ def apontar_plano_de_corte_subcommand(parsed_args: Namespace):
     )
 
     if parsed_args.tipo_apontamento == "INICIO_E_FIM":
+        time.sleep(2)
+
         logger.info("Apontando o fim do plano de corte...")
         tx.plano_de_corte.apontar(
             codigo_layout=parsed_args.cod_layout,

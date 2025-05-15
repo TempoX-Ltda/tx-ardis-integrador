@@ -73,18 +73,18 @@
             "justMyCode": true
         },
         {
-            "name": "Python: apontar-furadeira-leitura-scm-pratika",
+            "name": "Python: apontar-leitura-furadeira-scm-pratika",
             "type": "python",
             "request": "launch",
             "module": "src.main",
             "args": [
                 "--host",
-                "http://192.168.25.194:6543",
+                "http://192.168.0.115:6543",
                 "-u",
                 "admin",
                 "-p",
                 "qwe123",
-                "apontar-furadeira-leitura-scm-pratika",
+                "apontar-leitura-furadeira-scm-pratika",
                 "--caminho-arquivo",
                 "/workspaces/tx-ardis-integrador/Ardis/Furadeira SCM Pratika/",
                 "--id-recurso", 

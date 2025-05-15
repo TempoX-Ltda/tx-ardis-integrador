@@ -179,6 +179,24 @@ nova_ordem_parser.add_argument(
     required=True,
 )
 
+# Plano SCM
+apontar_plano_scm_parser = subparsers.add_parser(
+    "apontar-plano-de-corte-scm",
+    help="Aponta Plano de Corte da SCM cujo a maro e via ardis",
+)
+apontar_plano_scm_parser.add_argument(
+    "--caminho-arquivo",
+    type=str,
+    help="Caminho do arquivo que contem a informacao do plano",
+    required=True,
+)
+apontar_plano_scm_parser.add_argument(
+    "--tipo-apontamento",
+    type=str,
+    help="Tipo do apontamento",
+    choices=["INICIO_OU_FIM", "INICIO_E_FIM"],
+    required=True,
+)
 
 def parse_args(args=None):
     parsed = parser.parse_args(args)

@@ -139,5 +139,26 @@
             "console": "internalConsole",
             "justMyCode": true
         },
+        {
+            "name": "Python: apontar-plano-de-corte-scm",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main",
+            "args": [
+                "--host",
+                "http://192.168.0.115:6543",
+                "-u",
+                "admin",
+                "-p",
+                "qwe123",
+                "apontar-plano-de-corte-scm",
+                "--caminho-arquivo",
+                "/workspaces/tx-ardis-integrador/Ardis/Apontamento SCM",
+                "--tipo-apontamento", 
+                "INICIO_E_FIM",
+            ],
+            "console": "internalConsole",
+            "justMyCode": true
+        },
     ]
 }

@@ -17,6 +17,7 @@ from src.subcommands.apontar_plano_de_corte import apontar_plano_de_corte_subcom
 from src.subcommands.apontar_plano_de_corte_nanxing import (
     apontar_plano_de_corte_nanxing_subcommand,
 )
+from src.subcommands.apontar_plano_de_corte_scm import apontar_plano_de_corte_scm_subcommand
 from src.subcommands.nova_ordem import nova_ordem_subcommand
 from src.subcommands.novo_plano_de_corte import novo_plano_de_corte_subcommand
 
@@ -89,6 +90,10 @@ def main(parsed_args: Namespace):
 
     elif parsed_args.subcommand == "apontar-leitura-furadeira-scm-pratika":
         apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args)
+        return
+    
+    elif parsed_args.subcommand == "apontar-plano-de-corte-scm":
+        apontar_plano_de_corte_scm_subcommand(parsed_args)
         return
 
     # Subcomando não implementado

@@ -26,7 +26,7 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
 
     while True:
         logger.info("Aguardando 30 segundos...")
-        time.sleep(5)
+        time.sleep(30)
 
         if not caminho_pasta.exists() or not caminho_pasta.is_dir():
             logger.warning(f"Pasta {caminho_pasta} não encontrada ou não é diretório.")

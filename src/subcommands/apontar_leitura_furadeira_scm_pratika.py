@@ -97,11 +97,9 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
 
             for linha in linhas:
                 if tuple(linha) in linhas_processadas:
-                    logger.debug("Linha já processada, ignorando.")
                     continue
 
                 if tuple(linha) in linhas_com_erro:
-                    logger.debug("Linha já processada, ignorando.")
                     continue
 
                 try:
@@ -142,9 +140,6 @@ def apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args: Namespace):
                     ) as f_out:
                         writer_arquivo_com_erro = csv.writer(f_out)
                         writer_arquivo_com_erro.writerow(linha)
-                        logger.info(
-                            f"Adicionando linha com erro no arquivo de erros: {linha}"
-                        )
 
         except Exception as erro:
             logger.error(f"Erro no processamento: {erro}")

@@ -75,7 +75,6 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
 
                 logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
                 os.rename(arquivo, caminho_apontado)
-                logger.info(f"Arquivo renomeado para {caminho_apontado}")
 
             except Exception as e:
                 logger.error(f"Erro ao apontar plano {arquivo.name}: {e}")
@@ -84,6 +83,5 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
                     with open(caminho_erro, "a", encoding="utf-8") as f:
                         f.write("\n")
                         f.write(f"ERRO: {e}")
-                    logger.info(f"Arquivo renomeado para {caminho_erro} e erro registrado.")
                 except Exception as erro_renomeio:
                     logger.error(f"Erro ao renomear/escrever erro: {erro_renomeio}")

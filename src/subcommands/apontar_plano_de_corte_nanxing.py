@@ -69,9 +69,6 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
             layouts_apontados.add(plate_id)
 
             os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
-            logger.info(
-                f"Arquivo renomeado para {caminho_arquivo_apontado} após apontamento bem-sucedido."
-            )
         except Exception as e:
             if "já está finalizado" in str(e):
                 layouts_apontados.add(plate_id)
@@ -79,9 +76,6 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                 logger.error(f"Erro ao apontar plano {primeira_linha}: {e}")
                 try:
                     os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
-                    logger.info(
-                        f"Arquivo renomeado para {caminho_arquivo_erro} devido a erro."
-                    )
                     with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
                         f.write("\n")
                         f.write(f"ERRO: {e}")

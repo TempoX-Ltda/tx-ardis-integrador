@@ -98,15 +98,14 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
     tipo_apontamento = parsed_args.tipo_apontamento
     caminho_arquivo = parsed_args.caminho_arquivo_tempox
     layouts_apontados = set()
+    ultimo_plate_em_processo = None
 
     while True:
         logger.info("Aguardando 30 segundos.")
-        time.sleep(30)
+        time.sleep(5)
 
         if not os.path.exists(caminho_xml):
-            logger.warning(
-                f"Arquivo {caminho_xml} não encontrado. Aguardando 10 segundos..."
-            )
+            logger.warning(f"Arquivo {caminho_xml} não encontrado. Aguardando 10 segundos...")
             time.sleep(10)
             continue
 
@@ -118,7 +117,23 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
             time.sleep(10)
             continue
 
+        plate_id_atual = None
+
         for cycle in root.findall(".//Cycle"):
-            processar_cycle(
-                cycle, layouts_apontados, tx, tipo_apontamento, caminho_arquivo
-            )
+            plate_id, panel_state = extrair_dados_cycle(cycle)
+
+            if panel_state == "2":
+                plate_id_atual = plate_id
+
+            # Processa normalmente se estiver como 4
+            processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_arquivo)
+
+        # Aponta o anterior se ele estava em processo e foi trocado por outro
+        if ultimo_plate_em_processo and ultimo_plate_em_processo != plate_id_atual:
+            logger.warning(f"PlateID anterior {ultimo_plate_em_processo} não foi finalizado. Apontando mesmo assim.")
+            ciclo_falso = ET.Element("Cycle")
+            ET.SubElement(ciclo_falso, "Field", Name="PlateID", Value=f"{ultimo_plate_em_processo}.nc")
+            ET.SubElement(ciclo_falso, "Field", Name="PanelState", Value="4")
+            processar_cycle(ciclo_falso, layouts_apontados, tx, tipo_apontamento, caminho_arquivo)
+
+        ultimo_plate_em_processo = plate_id_atual

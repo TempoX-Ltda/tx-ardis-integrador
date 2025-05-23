@@ -101,8 +101,8 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
     ultimo_plate_em_processo = None
 
     while True:
-        logger.info("Aguardando 30 segundos.")
-        time.sleep(5)
+        logger.info("Aguardando 20 segundos.")
+        time.sleep(20)
 
         if not os.path.exists(caminho_xml):
             logger.warning(f"Arquivo {caminho_xml} não encontrado. Aguardando 10 segundos...")

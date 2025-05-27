@@ -111,6 +111,8 @@
                 "--tipo-apontamento", 
                 "INICIO_E_FIM",
                 "--caminho-arquivo-tempox", 
+                "/workspaces/tx-ardis-integrador/Ardis/Nesting Nanxing/arquivo_tempox",
+                "--caminho_arquivo_tx_sem_registo_maquina",
                 "/workspaces/tx-ardis-integrador/Ardis/Nesting Nanxing/arquivo_tempox"
             ],
             "console": "internalConsole",

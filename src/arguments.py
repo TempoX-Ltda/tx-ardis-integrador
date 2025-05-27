@@ -89,6 +89,12 @@ apontar_plano_de_corte_nanxing_parser.add_argument(
     help="Caminho do arquivo que contem a informacao de apontamento, da tempox.tx",
     required=True,
 )
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--caminho_arquivo_tx_sem_registo_maquina",
+    type=str,
+    help="Caminho do arquivo que contem a informacao de apontamento, da tempox.tx sem registo da máquina",
+    required=True,
+)
 
 # Apontar Leitura furadeira Nanxing
 apontar_leitura_furadeira_nanxing_parser = subparsers.add_parser(

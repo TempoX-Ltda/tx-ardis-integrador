@@ -6,6 +6,7 @@ from argparse import Namespace
 
 from httpx import Timeout
 
+from src.arguments import parse_args
 from src.tx.tx import Tx
 
 logger = logging.getLogger("src.subcommands.apontar_plano_de_corte_nanxing")
@@ -83,7 +84,60 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                     logger.error(
                         f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}"
                     )
+def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados, tx, tipo_apontamento):
+    if not caminho_arquivo_tx_apontar_sem_cycle or not os.path.exists(caminho_arquivo_tx_apontar_sem_cycle):
+        return
 
+    for nome_arquivo in os.listdir(caminho_arquivo_tx_apontar_sem_cycle):
+        if not nome_arquivo.endswith(".tx"):
+            continue
+
+        plate_id = nome_arquivo.replace(".tx", "")
+        if plate_id.endswith("_APONTADO") or plate_id.endswith("_COM_ERRO"):
+            continue
+
+        caminho_arquivo_tx = os.path.join(caminho_arquivo_tx_apontar_sem_cycle, nome_arquivo)
+        caminho_arquivo_apontado = os.path.join(caminho_arquivo_tx_apontar_sem_cycle, f"{plate_id}_APONTADO.tx")
+        caminho_arquivo_erro = os.path.join(caminho_arquivo_tx_apontar_sem_cycle, f"{plate_id}_COM_ERRO.tx")
+
+        if os.path.exists(caminho_arquivo_apontado) or os.path.exists(caminho_arquivo_erro):
+            continue
+
+        try:
+            with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:
+                primeira_linha = f.readline().strip()
+        except Exception as e:
+            logger.error(f"Erro ao ler {caminho_arquivo_tx}: {e}")
+            continue
+
+        if not primeira_linha:
+            logger.warning(f"Arquivo {caminho_arquivo_tx} está vazio. Ignorando...")
+            continue
+
+        logger.info(f"Apontando plano de corte (sem cycle) com layout: {primeira_linha}")
+        try:
+            tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+            time.sleep(2)
+            if tipo_apontamento == "INICIO_E_FIM":
+                logger.info(f"Apontando fim do plano de corte (sem cycle): {primeira_linha}")
+                tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+            logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
+            layouts_apontados.add(plate_id)
+            os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
+        except Exception as e:
+            if "já está finalizado" in str(e):
+                layouts_apontados.add(plate_id)
+            else:
+                logger.error(f"Erro ao apontar plano {primeira_linha}: {e}")
+                try:
+                    os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
+                    with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
+                        f.write("\n")
+                        f.write(f"ERRO: {e}")
+                except Exception as erro_renomear:
+                    logger.error(
+                        f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}"
+                    )
 
 def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
     logger.info("Iniciando apontamento dos planos no MES...")
@@ -97,12 +151,20 @@ def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
     caminho_xml = parsed_args.caminho_arquivo
     tipo_apontamento = parsed_args.tipo_apontamento
     caminho_arquivo = parsed_args.caminho_arquivo_tempox
+    caminho_arquivo_tx_apontar_sem_cycle = parsed_args.caminho_arquivo_tx_sem_registo_maquina
     layouts_apontados = set()
     ultimo_plate_em_processo = None
 
     while True:
         logger.info("Aguardando 20 segundos.")
         time.sleep(20)
+
+        processar_sem_cycle(
+            caminho_arquivo_tx_apontar_sem_cycle,
+            layouts_apontados,
+            tx,
+            tipo_apontamento
+        )
 
         if not os.path.exists(caminho_xml):
             logger.warning(f"Arquivo {caminho_xml} não encontrado. Aguardando 10 segundos...")

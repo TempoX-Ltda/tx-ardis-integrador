@@ -5,6 +5,7 @@ from argparse import Namespace
 from pathlib import Path
 
 from httpx import Timeout
+import httpx
 
 from src.tx.tx import Tx
 
@@ -23,6 +24,17 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
 
     caminho_pasta = Path(parsed_args.caminho_arquivo).resolve()
     tipo_apontamento = parsed_args.tipo_apontamento.upper()
+
+    def apontar(layout: str):
+        try:
+            tx.plano_de_corte.apontar(codigo_layout=layout)
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 401:
+                logger.warning("Token expirado. Realizando novo login...")
+                tx.login(tx.user, tx.password)
+                tx.plano_de_corte.apontar(codigo_layout=layout)
+            else:
+                raise
 
     while True:
         logger.info("Aguardando 30 segundos...")
@@ -45,8 +57,6 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
 
         for arquivo in arquivos_tx:
             nome_base = arquivo.stem
-
-            nome_base = arquivo.stem
             for sufixo in ["_APONTADO", "_COM_ERRO"]:
                 if nome_base.endswith(sufixo):
                     nome_base = nome_base[: -len(sufixo)]
@@ -66,12 +76,12 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
                     continue
 
                 logger.info(f"Apontando plano SCM: {primeira_linha}")
-                tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                apontar(primeira_linha)
 
                 if tipo_apontamento == "INICIO_E_FIM":
                     time.sleep(1)
                     logger.info(f"Apontando fim do plano de corte: {primeira_linha}")
-                    tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                    apontar(primeira_linha)
 
                 logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
                 os.rename(arquivo, caminho_apontado)
@@ -85,3 +95,4 @@ def apontar_plano_de_corte_scm_subcommand(parsed_args: Namespace):
                         f.write(f"ERRO: {e}")
                 except Exception as erro_renomeio:
                     logger.error(f"Erro ao renomear/escrever erro: {erro_renomeio}")
+

@@ -4,6 +4,8 @@ import time
 from argparse import Namespace
 from pathlib import Path
 
+import httpx
+
 from src.tx.modules.leituras.types import LeiturasPost
 from src.tx.tx import Tx
 
@@ -49,9 +51,9 @@ def carregar_linhas_com_erro(arquivo_com_erro: Path):
         reader = csv.reader(f)
         return set(tuple(row) for row in reader)
 
-
 def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
     logger.info("Iniciando processo de apontamento de leituras no MES...")
+
     tx = Tx(
         base_url=parsed_args.host,
         user=parsed_args.user,
@@ -60,6 +62,28 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
     )
 
     diretorio = Path(parsed_args.caminho_arquivo)
+
+    def tentar_enviar_leitura(leitura: LeiturasPost):
+        try:
+            tx.leitura.nova_leitura(
+                id_recurso=leitura.id_recurso,
+                codigo=leitura.codigo,
+                qtd=leitura.qtd,
+                leitura_manual=leitura.leitura_manual,
+            )
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 401:
+                logger.warning("Token expirado. Realizando novo login...")
+                tx.login(tx.user, tx.password)
+                tx.leitura.nova_leitura(
+                    id_recurso=leitura.id_recurso,
+                    codigo=leitura.codigo,
+                    qtd=leitura.qtd,
+                    leitura_manual=leitura.leitura_manual,
+                )
+            else:
+                raise
+
     while True:
         try:
             csv_entrada = obter_ultimo_csv(diretorio)
@@ -78,10 +102,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                 linhas = list(reader)[1:]  # Ignora cabeçalho
 
             for linha in linhas:
-                if tuple(linha) in linhas_processadas:
-                    continue
-
-                if tuple(linha) in linhas_com_erro:
+                if tuple(linha) in linhas_processadas or tuple(linha) in linhas_com_erro:
                     continue
 
                 try:
@@ -101,25 +122,16 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                         leitura_manual=False,
                     )
 
-                    tx.leitura.nova_leitura(
-                        id_recurso=leitura.id_recurso,
-                        codigo=leitura.codigo,
-                        qtd=leitura.qtd,
-                        leitura_manual=leitura.leitura_manual,
-                    )
+                    tentar_enviar_leitura(leitura)
 
-                    with caminho_processado.open(
-                        "a", newline="", encoding="utf-8"
-                    ) as f_out:
+                    with caminho_processado.open("a", newline="", encoding="utf-8") as f_out:
                         writer_arquivo_processado = csv.writer(f_out)
                         writer_arquivo_processado.writerow(linha)
                         logger.info(f"Linha processada com sucesso: {linha}")
 
                 except Exception as e:
                     logger.error(f"Erro ao processar linha {linha}: {e}")
-                    with caminho_com_erro.open(
-                        "a", newline="", encoding="utf-8"
-                    ) as f_out:
+                    with caminho_com_erro.open("a", newline="", encoding="utf-8") as f_out:
                         writer_arquivo_com_erro = csv.writer(f_out)
                         writer_arquivo_com_erro.writerow(linha)
 

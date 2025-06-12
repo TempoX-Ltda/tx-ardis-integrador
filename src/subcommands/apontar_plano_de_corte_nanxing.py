@@ -3,7 +3,7 @@ import os
 import time
 import xml.etree.ElementTree as ET
 from argparse import Namespace
-
+import httpx
 from httpx import Timeout
 
 from src.arguments import parse_args
@@ -38,10 +38,7 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
             caminho_pasta_tx, f"{plate_id}_APONTADO.tx"
         )
 
-        if os.path.exists(caminho_arquivo_apontado):
-            return
-
-        if os.path.exists(caminho_arquivo_erro):
+        if os.path.exists(caminho_arquivo_apontado) or os.path.exists(caminho_arquivo_erro):
             return
 
         if not os.path.exists(caminho_arquivo_tx):
@@ -61,14 +58,28 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
 
         logger.info(f"Apontando plano de corte com layout: {primeira_linha}")
         try:
-            tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
-            time.sleep(2)  # espera 2 segundos para dar um tempo par ao layout
+            def apontar():
+                try:
+                    tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                except httpx.HTTPStatusError as e:
+                    if e.response.status_code == 401:
+                        logger.warning("Token expirado. Realizando novo login...")
+                        tx.login(tx.user, tx.password)
+                        tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                    else:
+                        raise
+
+            # Aponta INÍCIO
+            apontar()
+            time.sleep(2)
+
+            # Aponta FIM se necessário
             if tipo_apontamento == "INICIO_E_FIM":
                 logger.info(f"Apontando fim do plano de corte: {primeira_linha}")
-                tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                apontar()
+
             logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
             layouts_apontados.add(plate_id)
-
             os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
         except Exception as e:
             if "já está finalizado" in str(e):
@@ -118,12 +129,27 @@ def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados,
             continue
 
         logger.info(f"Apontando plano de corte (sem cycle) com layout: {primeira_linha}")
+
         try:
-            tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+            def apontar():
+                try:
+                    tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                except httpx.HTTPStatusError as e:
+                    if e.response.status_code == 401:
+                        logger.warning("Token expirado. Realizando novo login...")
+                        tx.login(tx.user, tx.password)
+                        tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                    else:
+                        raise
+
+            # Aponta INÍCIO
+            apontar()
             time.sleep(2)
+
+            # Aponta FIM se necessário
             if tipo_apontamento == "INICIO_E_FIM":
                 logger.info(f"Apontando fim do plano de corte (sem cycle): {primeira_linha}")
-                tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
+                apontar()
 
             logger.info(f"Apontamento do plano {primeira_linha} realizado com sucesso.")
             layouts_apontados.add(plate_id)

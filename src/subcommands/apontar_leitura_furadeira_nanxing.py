@@ -87,7 +87,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
     while True:
         try:
             csv_entrada = obter_ultimo_csv(diretorio)
-            csv_com_erro = obter_ultimo_csv_com_erro(diretorio)
+            csv_com_erro = obter_ultimo_csv(diretorio)
 
             nome_processado = csv_entrada.stem + "_PROCESSADO_TEMPOX.csv"
             caminho_processado = csv_entrada.with_name(nome_processado)

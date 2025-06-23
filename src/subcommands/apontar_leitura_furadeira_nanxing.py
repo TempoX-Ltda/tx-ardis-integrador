@@ -12,45 +12,6 @@ from src.tx.tx import Tx
 logger = logging.getLogger("src.subcommands.apontar_leitura_furadeira_nanxing")
 
 
-def obter_ultimo_csv(diretorio: Path):
-    arquivos_csv = [
-        p
-        for p in diretorio.glob("*.csv")
-        if "_PROCESSADO_TEMPOX" not in p.stem and "_COM_ERRO_TEMPOX" not in p.stem
-    ]
-    if not arquivos_csv:
-        raise FileNotFoundError("Nenhum arquivo CSV encontrado.")
-
-    return max(arquivos_csv, key=lambda p: p.stat().st_mtime)
-
-
-def obter_ultimo_csv_com_erro(diretorio: Path):
-    arquivos_csv = [
-        p for p in diretorio.glob("*.csv") if "_COM_ERRO_TEMPOX" not in p.stem
-    ]
-    if not arquivos_csv:
-        raise FileNotFoundError("Nenhum arquivo com ERRO encontrado.")
-
-    return max(arquivos_csv, key=lambda p: p.stat().st_mtime)
-
-
-def carregar_linhas_processadas(arquivo_processado: Path):
-    if not arquivo_processado.exists():
-        return set()
-
-    with arquivo_processado.open("r", newline="", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        return set(tuple(row) for row in reader)
-
-
-def carregar_linhas_com_erro(arquivo_com_erro: Path):
-    if not arquivo_com_erro.exists():
-        return set()
-
-    with arquivo_com_erro.open("r", newline="", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        return set(tuple(row) for row in reader)
-
 def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
     logger.info("Iniciando processo de apontamento de leituras no MES...")
 
@@ -86,54 +47,68 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
 
     while True:
         try:
-            csv_entrada = obter_ultimo_csv(diretorio)
-            csv_com_erro = obter_ultimo_csv(diretorio)
+            arquivos_csv = [
+                p for p in diretorio.glob("*.csv")
+                if "_PROCESSADO_TEMPOX" not in p.stem and "_COM_ERRO_TEMPOX" not in p.stem
+            ]
 
-            nome_processado = csv_entrada.stem + "_PROCESSADO_TEMPOX.csv"
-            caminho_processado = csv_entrada.with_name(nome_processado)
-            linhas_processadas = carregar_linhas_processadas(caminho_processado)
+            for csv_entrada in arquivos_csv:
+                nome_com_erro = csv_entrada.stem + "_COM_ERRO_TEMPOX.csv"
+                caminho_com_erro = csv_entrada.with_name(nome_com_erro)
 
-            nome_com_erro = csv_com_erro.stem + "_COM_ERRO_TEMPOX.csv"
-            caminho_com_erro = csv_com_erro.with_name(nome_com_erro)
-            linhas_com_erro = carregar_linhas_com_erro(caminho_com_erro)
+                linhas_ok = []
 
-            with csv_entrada.open("r", newline="", encoding="utf-8") as f_in:
-                reader = csv.reader(f_in)
-                linhas = list(reader)[1:]  # Ignora cabeçalho
+                with csv_entrada.open("r", newline="", encoding="utf-8") as f_in:
+                    reader = csv.reader(f_in)
+                    linhas = list(reader)
+                    header = linhas[0]
+                    linhas = linhas[1:]  # remove cabeçalho
 
-            for linha in linhas:
-                if tuple(linha) in linhas_processadas or tuple(linha) in linhas_com_erro:
-                    continue
+                for linha in linhas:
+                    if not linha or len(linha) < 2 or linha[0].strip().startswith("ERRO:"):
+                        continue  # ignora linha de erro ou vazia
+                    try:
+                        path = Path(linha[1])
+                        ord = path.stem
 
-                try:
-                    path = Path(linha[1])
-                    ord = path.stem
+                        if not ord:
+                            logger.warning(f"ORD inválida na linha: {linha}")
+                            continue
 
-                    if not ord:
-                        logger.warning(f"ORD inválida na linha: {linha}")
-                        continue
+                        logger.info(f"Enviando leitura para API: {ord}")
 
-                    logger.info(f"Enviando leitura para API: {ord}")
+                        leitura = LeiturasPost(
+                            id_recurso=parsed_args.id_recurso,
+                            codigo=ord,
+                            qtd=1,
+                            leitura_manual=False,
+                        )
 
-                    leitura = LeiturasPost(
-                        id_recurso=parsed_args.id_recurso,
-                        codigo=ord,
-                        qtd=1,
-                        leitura_manual=False,
-                    )
+                        tentar_enviar_leitura(leitura)
 
-                    tentar_enviar_leitura(leitura)
-
-                    with caminho_processado.open("a", newline="", encoding="utf-8") as f_out:
-                        writer_arquivo_processado = csv.writer(f_out)
-                        writer_arquivo_processado.writerow(linha)
+                        linhas_ok.append(linha)
                         logger.info(f"Linha processada com sucesso: {linha}")
 
+                    except Exception as e:
+                        logger.error(f"Erro ao processar linha {linha}: {e}")
+                        escrever_cabecalho = not caminho_com_erro.exists()
+                        with caminho_com_erro.open("a", newline="", encoding="utf-8") as f_out:
+                            writer = csv.writer(f_out)
+                            if escrever_cabecalho:
+                                writer.writerow(header)
+                            writer.writerow(linha)
+                            writer.writerow([f"ERRO: {str(e)}"])
+
+                # Salvar apenas as linhas que deram certo
+                caminho_processado = csv_entrada.with_name(csv_entrada.stem + "_PROCESSADO_TEMPOX.csv")
+                try:
+                    with caminho_processado.open("w", newline="", encoding="utf-8") as f_out:
+                        writer = csv.writer(f_out)
+                        writer.writerow(header)
+                        writer.writerows(linhas_ok)
+                    csv_entrada.unlink()
                 except Exception as e:
-                    logger.error(f"Erro ao processar linha {linha}: {e}")
-                    with caminho_com_erro.open("a", newline="", encoding="utf-8") as f_out:
-                        writer_arquivo_com_erro = csv.writer(f_out)
-                        writer_arquivo_com_erro.writerow(linha)
+                    logger.error(f"Erro ao salvar ou apagar arquivo original {csv_entrada.name}: {e}")
 
         except Exception as erro:
             logger.error(f"Erro no processamento: {erro}")

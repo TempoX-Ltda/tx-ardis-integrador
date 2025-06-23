@@ -55,6 +55,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
             for csv_entrada in arquivos_csv:
                 nome_com_erro = csv_entrada.stem + "_COM_ERRO_TEMPOX.csv"
                 caminho_com_erro = csv_entrada.with_name(nome_com_erro)
+                caminho_processado = csv_entrada.with_name(csv_entrada.stem + "_PROCESSADO_TEMPOX.csv")
 
                 linhas_ok = []
 
@@ -64,9 +65,24 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                     header = linhas[0]
                     linhas = linhas[1:]  # remove cabeçalho
 
+                # Carrega linhas já processadas (caso arquivo exista)
+                linhas_ja_processadas = set()
+                if caminho_processado.exists():
+                    with caminho_processado.open("r", newline="", encoding="utf-8") as f_in:
+                        reader = csv.reader(f_in)
+                        linhas_existentes = list(reader)
+                        if linhas_existentes:
+                            linhas_ja_processadas.update(tuple(row) for row in linhas_existentes[1:])  # ignora cabeçalho
+
                 for linha in linhas:
-                    if not linha or len(linha) < 2 or linha[0].strip().startswith("ERRO:"):
-                        continue  # ignora linha de erro ou vazia
+                    if (
+                        not linha
+                        or len(linha) < 2
+                        or linha[0].strip().startswith("ERRO:")
+                        or tuple(linha) in linhas_ja_processadas
+                    ):
+                        continue  # ignora erro, linha vazia ou já processada
+
                     try:
                         path = Path(linha[1])
                         ord = path.stem
@@ -99,16 +115,17 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                             writer.writerow(linha)
                             writer.writerow([f"ERRO: {str(e)}"])
 
-                # Salvar apenas as linhas que deram certo
-                caminho_processado = csv_entrada.with_name(csv_entrada.stem + "_PROCESSADO_TEMPOX.csv")
-                try:
-                    with caminho_processado.open("w", newline="", encoding="utf-8") as f_out:
-                        writer = csv.writer(f_out)
+                # Anexa somente as novas linhas OK ao arquivo de processados
+                novas_linhas_ok = [linha for linha in linhas_ok if tuple(linha) not in linhas_ja_processadas]
+                modo_abertura = "a" if caminho_processado.exists() else "w"
+                with caminho_processado.open(modo_abertura, newline="", encoding="utf-8") as f_out:
+                    writer = csv.writer(f_out)
+                    if modo_abertura == "w":
                         writer.writerow(header)
-                        writer.writerows(linhas_ok)
-                    csv_entrada.unlink()
-                except Exception as e:
-                    logger.error(f"Erro ao salvar ou apagar arquivo original {csv_entrada.name}: {e}")
+                    writer.writerows(novas_linhas_ok)
+
+                # Remove o arquivo original apenas se todas as linhas foram tratadas
+                csv_entrada.unlink()
 
         except Exception as erro:
             logger.error(f"Erro no processamento: {erro}")

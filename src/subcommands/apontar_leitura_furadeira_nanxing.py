@@ -84,7 +84,12 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                         continue  # ignora erro, linha vazia ou já processada
 
                     try:
-                        path = Path(linha[1])
+                        try:
+                            path = Path(linha[1])
+                            ord = path.stem
+                        except Exception:
+                            logger.warning(f"Caminho inválido na linha: {linha}")
+                            continue
                         ord = path.stem
 
                         if not ord:

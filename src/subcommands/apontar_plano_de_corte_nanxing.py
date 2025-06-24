@@ -34,30 +34,30 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
     if panel_state == "4" and plate_id and plate_id not in layouts_apontados:
         caminho_arquivo_tx = os.path.join(caminho_pasta_tx, f"{plate_id}.tx")
         caminho_arquivo_erro = os.path.join(caminho_pasta_tx, f"{plate_id}_COM_ERRO.tx")
-        caminho_arquivo_apontado = os.path.join(
-            caminho_pasta_tx, f"{plate_id}_APONTADO.tx"
-        )
+        caminho_arquivo_apontado = os.path.join(caminho_pasta_tx, f"{plate_id}_APONTADO.tx")
 
         if os.path.exists(caminho_arquivo_apontado) or os.path.exists(caminho_arquivo_erro):
             return
 
         if not os.path.exists(caminho_arquivo_tx):
             logger.warning(f"Arquivo {caminho_arquivo_tx} não encontrado. Ignorando...")
+            # Renomeia como erro mesmo que não exista o original
+            try:
+                with open(caminho_arquivo_erro, "w", encoding="utf-8") as f:
+                    f.write(f"ERRO: Arquivo não encontrado.")
+            except Exception as e:
+                logger.error(f"Erro ao criar {caminho_arquivo_erro}: {e}")
             return
 
         try:
             with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:
                 primeira_linha = f.readline().strip()
-        except Exception as e:
-            logger.error(f"Erro ao ler {caminho_arquivo_tx}: {e}")
-            return
 
-        if not primeira_linha:
-            logger.warning(f"Arquivo {caminho_arquivo_tx} está vazio. Ignorando...")
-            return
+            if not primeira_linha:
+                raise ValueError("Arquivo está vazio")
 
-        logger.info(f"Apontando plano de corte com layout: {primeira_linha}")
-        try:
+            logger.info(f"Apontando plano de corte com layout: {primeira_linha}")
+
             def apontar():
                 try:
                     tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
@@ -82,19 +82,20 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
             layouts_apontados.add(plate_id)
             os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
         except Exception as e:
-            if "já está finalizado" in str(e):
+            erro_msg = str(e)
+            if "já está finalizado" in erro_msg:
+                logger.warning(f"O plano já está finalizado.")
                 layouts_apontados.add(plate_id)
             else:
-                logger.error(f"Erro ao apontar plano {primeira_linha}: {e}")
+                logger.error(f"Erro ao apontar plano {plate_id}: {e}")
                 try:
                     os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
                     with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
                         f.write("\n")
                         f.write(f"ERRO: {e}")
                 except Exception as erro_renomear:
-                    logger.error(
-                        f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}"
-                    )
+                    logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
+
 
 def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados, tx, tipo_apontamento):
     if not caminho_arquivo_tx_apontar_sem_cycle or not os.path.exists(caminho_arquivo_tx_apontar_sem_cycle):

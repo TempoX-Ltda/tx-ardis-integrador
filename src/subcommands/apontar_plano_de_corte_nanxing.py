@@ -95,6 +95,7 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                     logger.error(
                         f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}"
                     )
+
 def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados, tx, tipo_apontamento):
     if not caminho_arquivo_tx_apontar_sem_cycle or not os.path.exists(caminho_arquivo_tx_apontar_sem_cycle):
         return
@@ -103,19 +104,13 @@ def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados,
         if not nome_arquivo.endswith(".tx"):
             continue
 
-        plate_id = nome_arquivo.replace(".tx", "")
-        
-        # Ignora arquivos já apontados apenas
-        if plate_id.endswith("_APONTADO"):
-            continue
+        if "_APONTADO" in nome_arquivo or "_COM_ERRO" in nome_arquivo:
+            continue  # Ignora arquivos já processados ou com erro
 
+        plate_id = nome_arquivo.replace(".tx", "")
         caminho_arquivo_tx = os.path.join(caminho_arquivo_tx_apontar_sem_cycle, nome_arquivo)
         caminho_arquivo_apontado = os.path.join(caminho_arquivo_tx_apontar_sem_cycle, f"{plate_id}_APONTADO.tx")
         caminho_arquivo_erro = os.path.join(caminho_arquivo_tx_apontar_sem_cycle, f"{plate_id}_COM_ERRO.tx")
-
-        # Garante que não tente reprocessar arquivos que já foram processados
-        if os.path.exists(caminho_arquivo_apontado):
-            continue
 
         try:
             with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:

@@ -115,17 +115,12 @@ def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados,
         try:
             with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:
                 primeira_linha = f.readline().strip()
-        except Exception as e:
-            logger.error(f"Erro ao ler {caminho_arquivo_tx}: {e}")
-            continue
 
-        if not primeira_linha:
-            logger.warning(f"Arquivo {caminho_arquivo_tx} está vazio. Ignorando...")
-            continue
+            if not primeira_linha:
+                raise ValueError("Arquivo está vazio")
 
-        logger.info(f"Apontando plano de corte (sem cycle) com layout: {primeira_linha}")
+            logger.info(f"Apontando plano de corte (sem cycle) com layout: {primeira_linha}")
 
-        try:
             def apontar():
                 try:
                     tx.plano_de_corte.apontar(codigo_layout=primeira_linha)
@@ -151,20 +146,15 @@ def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados,
             os.rename(caminho_arquivo_tx, caminho_arquivo_apontado)
 
         except Exception as e:
-            erro_msg = str(e)
-            if "já está finalizado" in erro_msg:
-                logger.warning(f"O plano {primeira_linha} já está finalizado.")
-                layouts_apontados.add(plate_id)
-            else:
-                logger.error(f"Erro ao apontar plano {primeira_linha}: {e}")
-                try:
-                    os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
-                    with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
-                        f.write("\n")
-                        f.write(f"ERRO: {e}")
-                except Exception as erro_renomear:
-                    logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
-
+            logger.error(f"Erro ao processar {caminho_arquivo_tx}: {e}")
+            try:
+                os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
+                with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
+                    f.write("\n")
+                    f.write(f"ERRO: {e}")
+            except Exception as erro_renomear:
+                logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
+                
 def apontar_plano_de_corte_nanxing_subcommand(parsed_args: Namespace):
     logger.info("Iniciando apontamento dos planos no MES...")
     tx = Tx(

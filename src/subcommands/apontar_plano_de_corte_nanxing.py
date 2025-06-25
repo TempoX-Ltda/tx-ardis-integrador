@@ -41,10 +41,9 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
 
         if not os.path.exists(caminho_arquivo_tx):
             logger.warning(f"Arquivo {caminho_arquivo_tx} não encontrado. Ignorando...")
-            # Renomeia como erro mesmo que não exista o original
             try:
                 with open(caminho_arquivo_erro, "w", encoding="utf-8") as f:
-                    f.write(f"ERRO: Arquivo não encontrado.")
+                    f.write("ERRO: Arquivo não encontrado.")
             except Exception as e:
                 logger.error(f"Erro ao criar {caminho_arquivo_erro}: {e}")
             return
@@ -89,9 +88,13 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
             else:
                 logger.error(f"Erro ao apontar plano {plate_id}: {e}")
                 try:
+                    with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:
+                        conteudo_original = f.read()
+
                     os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
-                    with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
-                        f.write("\n")
+
+                    with open(caminho_arquivo_erro, "w", encoding="utf-8") as f:
+                        f.write(conteudo_original.strip() + "\n")
                         f.write(f"ERRO: {e}")
                 except Exception as erro_renomear:
                     logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")

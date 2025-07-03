@@ -162,7 +162,7 @@ def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados,
                 logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
 
 def reapontar_planos_com_erro_nanxing(
-    caminhos: list[str],
+    caminhos: "list[str]",
     tx: Tx,
     tipo_apontamento: str,
     dias_reapontamento: int,

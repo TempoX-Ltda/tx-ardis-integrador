@@ -99,7 +99,8 @@ apontar_plano_de_corte_nanxing_parser.add_argument(
     "--dias-reapontamento",
     type=int,
     help="numero de identificacao da maquina no MES",
-    required=True,
+    required=False,
+    default=5
 )
 
 # Apontar Leitura furadeira Nanxing
@@ -123,7 +124,8 @@ apontar_leitura_furadeira_nanxing_parser.add_argument(
     "--dias-reapontamento",
     type=int,
     help="numero de dias usados para reapontar arquivos com erro",
-    required=True,
+    required=False,
+    default=5
 )
 
 # Apontar Leitura furadeira scm pratika
@@ -147,7 +149,8 @@ apontar_leitura_furadeira_scm_pratika_parser.add_argument(
     "--dias-reapontamento",
     type=int,
     help="numero de identificacao da maquina no MES",
-    required=True,
+    required=False,
+    default=5
 )
 
 # Novo Plano de Corte
@@ -225,7 +228,8 @@ apontar_plano_scm_parser.add_argument(
     "--dias-reapontamento",
     type=int,
     help="numero de identificacao da maquina no MES",
-    required=True,
+    required=False,
+    default=5
 )
 
 def parse_args(args=None):

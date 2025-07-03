@@ -95,6 +95,12 @@ apontar_plano_de_corte_nanxing_parser.add_argument(
     help="Caminho do arquivo que contem a informacao de apontamento, da tempox.tx sem registo da máquina",
     required=True,
 )
+apontar_plano_de_corte_nanxing_parser.add_argument(
+    "--dias-reapontamento",
+    type=int,
+    help="numero de identificacao da maquina no MES",
+    required=True,
+)
 
 # Apontar Leitura furadeira Nanxing
 apontar_leitura_furadeira_nanxing_parser = subparsers.add_parser(
@@ -113,6 +119,12 @@ apontar_leitura_furadeira_nanxing_parser.add_argument(
     help="numero de identificacao da maquina no MES",
     required=True,
 )
+apontar_leitura_furadeira_nanxing_parser.add_argument(
+    "--dias-reapontamento",
+    type=int,
+    help="numero de dias usados para reapontar arquivos com erro",
+    required=True,
+)
 
 # Apontar Leitura furadeira scm pratika
 apontar_leitura_furadeira_scm_pratika_parser = subparsers.add_parser(
@@ -127,6 +139,12 @@ apontar_leitura_furadeira_scm_pratika_parser.add_argument(
 )
 apontar_leitura_furadeira_scm_pratika_parser.add_argument(
     "--id-recurso",
+    type=int,
+    help="numero de identificacao da maquina no MES",
+    required=True,
+)
+apontar_leitura_furadeira_scm_pratika_parser.add_argument(
+    "--dias-reapontamento",
     type=int,
     help="numero de identificacao da maquina no MES",
     required=True,
@@ -188,7 +206,7 @@ nova_ordem_parser.add_argument(
 # Plano SCM
 apontar_plano_scm_parser = subparsers.add_parser(
     "apontar-plano-de-corte-scm",
-    help="Aponta Plano de Corte da SCM cujo a maro e via ardis",
+    help="Aponta Plano de Corte da SCM cujo a macro e via ardis",
 )
 apontar_plano_scm_parser.add_argument(
     "--caminho-arquivo",
@@ -201,6 +219,12 @@ apontar_plano_scm_parser.add_argument(
     type=str,
     help="Tipo do apontamento",
     choices=["INICIO_OU_FIM", "INICIO_E_FIM"],
+    required=True,
+)
+apontar_plano_scm_parser.add_argument(
+    "--dias-reapontamento",
+    type=int,
+    help="numero de identificacao da maquina no MES",
     required=True,
 )
 

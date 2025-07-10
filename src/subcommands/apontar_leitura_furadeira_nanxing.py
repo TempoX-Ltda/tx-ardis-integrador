@@ -132,6 +132,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
     )
 
     diretorio = Path(parsed_args.caminho_arquivo)
+    logger.info(f"Diretório configurado: {diretorio.resolve()}")
 
     def tentar_enviar_leitura(leitura: LeiturasPost):
         try:
@@ -156,12 +157,24 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
 
     while True:
         try:
+            logger.info("=== Novo ciclo de apontamento ===")
+            logger.info("Listando todos os arquivos .csv encontrados no diretório:")
+
+            todos_csv = list(diretorio.glob("*.csv"))
+            for arq in todos_csv:
+                logger.info(f"- {arq.name}")
+
             arquivos_csv = [
-                p for p in diretorio.glob("*.csv")
+                p for p in todos_csv
                 if "_PROCESSADO_TEMPOX" not in p.stem and "_COM_ERRO" not in p.stem
             ]
+            logger.info("Arquivos filtrados para processamento:")
+            for p in arquivos_csv:
+                logger.info(f"→ {p.name}")
 
             for csv_entrada in arquivos_csv:
+                logger.info(f"Processando arquivo: {csv_entrada.name}")
+
                 nome_com_erro = csv_entrada.stem + "_COM_ERRO.csv"
                 caminho_com_erro = csv_entrada.with_name(nome_com_erro)
                 caminho_processado = csv_entrada.with_name(csv_entrada.stem + "_PROCESSADO_TEMPOX.csv")
@@ -199,7 +212,6 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                         except Exception:
                             logger.warning(f"Caminho inválido na linha: {linha}")
                             continue
-                        ord = path.stem
 
                         if not ord:
                             logger.warning(f"ORD inválida na linha: {linha}")
@@ -243,13 +255,13 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
 
         except Exception as erro:
             logger.error(f"Erro no processamento: {erro}")
-            
+
         reapontar_leituras_com_erro(
             diretorio=diretorio,
             tx=tx,
             id_recurso=parsed_args.id_recurso,
             quantidade_dias_reapontamento=parsed_args.dias_reapontamento
         )
-    
+
         logger.info("Aguardando próximo ciclo (30 segundos)...")
         time.sleep(30)

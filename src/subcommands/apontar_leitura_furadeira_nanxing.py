@@ -4,6 +4,7 @@ import time
 from argparse import Namespace
 from pathlib import Path
 from datetime import datetime, timedelta
+import traceback
 
 import httpx
 
@@ -256,7 +257,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                 csv_entrada.unlink()
 
         except Exception as erro:
-            logger.error(f"Erro no processamento: {erro}")
+            logger.error(f"Erro no processamento: {erro}\n{traceback.format_exc()}")
 
         reapontar_leituras_com_erro(
             diretorio=diretorio,

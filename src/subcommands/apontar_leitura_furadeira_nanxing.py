@@ -181,8 +181,9 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
 
                 linhas_ok = []
 
-                with csv_entrada.open("r", newline="", encoding="utf-8") as f_in:
-                    reader = csv.reader(f_in)
+                with csv_entrada.open("r", encoding="utf-8", errors="replace") as f_in:
+                    linhas_brutas = f_in.read().replace('\x00', '')  # remove bytes nulos
+                    reader = csv.reader(linhas_brutas.splitlines())
                     linhas = list(reader)
                     header = linhas[0]
                     linhas = linhas[1:]  # remove cabeçalho

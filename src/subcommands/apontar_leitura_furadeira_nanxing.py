@@ -13,7 +13,6 @@ from src.tx.tx import Tx
 logger = logging.getLogger("src.subcommands.apontar_leitura_furadeira_nanxing")
 
 
-
 def reapontar_leituras_com_erro(diretorio: Path, tx: Tx, id_recurso: int, quantidade_dias_reapontamento: int):
     logger.info("Iniciando tentativa de reapontamento de arquivos com erro...")
 
@@ -30,8 +29,9 @@ def reapontar_leituras_com_erro(diretorio: Path, tx: Tx, id_recurso: int, quanti
         )
 
         try:
-            with caminho_com_erro.open("r", newline="", encoding="utf-8") as f_in:
-                reader = csv.reader(f_in)
+            with caminho_com_erro.open("r", encoding="utf-8", errors="ignore") as f_in:
+                linhas_brutas = f_in.read().replace('\x00', '')  # remove bytes nulos
+                reader = csv.reader(linhas_brutas.splitlines())
                 linhas = list(reader)
 
             if not linhas:
@@ -42,7 +42,7 @@ def reapontar_leituras_com_erro(diretorio: Path, tx: Tx, id_recurso: int, quanti
 
             linhas_ja_processadas = set()
             if caminho_processado.exists():
-                with caminho_processado.open("r", newline="", encoding="utf-8") as f_in:
+                with caminho_processado.open("r", newline="", encoding="utf-8", errors="ignore") as f_in:
                     reader = csv.reader(f_in)
                     existentes = list(reader)
                     if existentes:
@@ -181,8 +181,9 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
 
                 linhas_ok = []
 
-                with csv_entrada.open("r", encoding="utf-8", errors="replace") as f_in:
+                with csv_entrada.open("r", encoding="utf-8", errors="ignore") as f_in:
                     linhas_brutas = f_in.read().replace('\x00', '')  # remove bytes nulos
+                    logger.info(f"Tamanho do conteúdo após limpeza: {len(linhas_brutas)} bytes")
                     reader = csv.reader(linhas_brutas.splitlines())
                     linhas = list(reader)
                     header = linhas[0]
@@ -191,7 +192,7 @@ def apontar_leitura_furadeira_nanxing_subcommand(parsed_args: Namespace):
                 # Carrega linhas já processadas (caso arquivo exista)
                 linhas_ja_processadas = set()
                 if caminho_processado.exists():
-                    with caminho_processado.open("r", newline="", encoding="utf-8") as f_in:
+                    with caminho_processado.open("r", newline="", encoding="utf-8", errors="ignore") as f_in:
                         reader = csv.reader(f_in)
                         linhas_existentes = list(reader)
                         if linhas_existentes:

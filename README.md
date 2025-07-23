@@ -5,3 +5,8 @@ Para compilar um novo exe
 ``` sh
 pyinstaller send_ardis.py -F
 ```
+
+# Para instalar as dependências
+``` sh
+pipenv install --dev
+```

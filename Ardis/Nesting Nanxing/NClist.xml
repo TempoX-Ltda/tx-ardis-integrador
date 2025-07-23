@@ -1,0 +1,38 @@
+<CycleFile>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="Plano828_13_15BRANCOTX.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_13_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="0" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="4" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="Plano828_14_15BRANCOTX.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_14_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="0" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="4" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+  <Cycle Name="Cycle_List">
+    <Field Name="PlateID" Value="Plano828_15_15BRANCOTX.nc" />
+    <Field Name="LabelName" Value="Label_Plano828_15_15BRANCOTX.cyc" />
+    <Field Name="LargeImage" Value="" />
+    <Field Name="Color" Value="" />
+    <Field Name="Thickness" Value="" />
+    <Field Name="FinishTimes" Value="0" />
+    <Field Name="RepeatTimes" Value="1" />
+    <Field Name="Station" Value="1" />
+    <Field Name="PanelState" Value="4" />
+    <Field Name="WorkIndex" Value="20250430_1459" />
+  </Cycle>
+</CycleFile>

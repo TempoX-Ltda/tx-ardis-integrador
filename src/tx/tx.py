@@ -1,14 +1,14 @@
 import logging
-
 import httpx
 
 from src.tx.exceptions import CannotLoginError
 from src.tx.modules._auth import login
 from src.tx.modules.cliente import Cliente
+from src.tx.modules.leituras import Leitura
 from src.tx.modules.plano_de_corte import PlanoDeCorte
 from src.utils import get_version
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.tx.tx")
 
 
 class Tx:
@@ -28,7 +28,14 @@ class Tx:
             timeout=default_timeout,
         )
 
-        logger.info("Obtendo credênciais de acesso a API...")
+        self.login(user, password)  
+
+        self.plano_de_corte = PlanoDeCorte(self.client)
+        self.cliente = Cliente(self.client)
+        self.leitura = Leitura(self.client)
+
+    def login(self, user: str, password: str):
+        logger.info("Obtendo credenciais de acesso à API...")
         login_data = login(self.client, user, password)
 
         if not login_data.key:
@@ -43,9 +50,4 @@ class Tx:
                 "User-Agent": "tx-mes-cli/" + get_version(),
             }
         )
-
-        logger.info("Credênciais obtidas com sucesso!")
-
-        # submodules
-        self.plano_de_corte = PlanoDeCorte(self.client)
-        self.cliente = Cliente(self.client)
+        logger.info("Credenciais obtidas com sucesso!")

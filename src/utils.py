@@ -23,7 +23,7 @@ def handle_http_error(exc: HTTPStatusError):
         server_message = response.text
 
     message = (
-        f"Erro {response.status_code} ao enviar dados para a API:\n" f"{server_message}"
+        f"Erro {response.status_code} ao enviar dados para a API:\n{server_message}"
     )
 
     return message

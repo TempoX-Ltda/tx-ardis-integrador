@@ -7,6 +7,17 @@ from argparse import Namespace
 from logging.handlers import RotatingFileHandler
 
 from src.arguments import parse_args
+from src.subcommands.apontar_leitura_furadeira_nanxing import (
+    apontar_leitura_furadeira_nanxing_subcommand,
+)
+from src.subcommands.apontar_leitura_furadeira_scm_pratika import (
+    apontar_leitura_furadeira_scm_pratika_subcommand,
+)
+from src.subcommands.apontar_plano_de_corte import apontar_plano_de_corte_subcommand
+from src.subcommands.apontar_plano_de_corte_nanxing import (
+    apontar_plano_de_corte_nanxing_subcommand,
+)
+from src.subcommands.apontar_plano_de_corte_scm import apontar_plano_de_corte_scm_subcommand
 from src.subcommands.nova_ordem import nova_ordem_subcommand
 from src.subcommands.novo_plano_de_corte import novo_plano_de_corte_subcommand
 
@@ -37,11 +48,11 @@ def setup_logger(parsed_args: Namespace):
         "%(asctime)s,%(msecs)d | %(name)s | %(levelname)s | %(message)s"
     )
 
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("src")
     logger.setLevel(logging.DEBUG)
 
     file_log_handler = RotatingFileHandler(
-        log_file, maxBytes=100 * 1024 * 1024, backupCount=2
+        log_file, maxBytes=10 * 1024 * 1024, backupCount=10
     )
     file_log_handler.setLevel(logging.DEBUG)
     file_log_handler.setFormatter(formatter)
@@ -65,8 +76,28 @@ def main(parsed_args: Namespace):
         nova_ordem_subcommand(parsed_args)
         return
 
+    elif parsed_args.subcommand == "apontar-plano-de-corte":
+        apontar_plano_de_corte_subcommand(parsed_args)
+        return
+
+    elif parsed_args.subcommand == "apontar-plano-de-corte-nanxing":
+        apontar_plano_de_corte_nanxing_subcommand(parsed_args)
+        return
+
+    elif parsed_args.subcommand == "apontar-leitura-furadeira-nanxing":
+        apontar_leitura_furadeira_nanxing_subcommand(parsed_args)
+        return
+
+    elif parsed_args.subcommand == "apontar-leitura-furadeira-scm-pratika":
+        apontar_leitura_furadeira_scm_pratika_subcommand(parsed_args)
+        return
+    
+    elif parsed_args.subcommand == "apontar-plano-de-corte-scm":
+        apontar_plano_de_corte_scm_subcommand(parsed_args)
+        return
+
     # Subcomando não implementado
-    raise NotImplementedError(f"Subcomando {parsed_args.subcommands} não implementado")
+    raise NotImplementedError(f"Subcomando {parsed_args.subcommand} não implementado")
 
 
 if __name__ == "__main__":

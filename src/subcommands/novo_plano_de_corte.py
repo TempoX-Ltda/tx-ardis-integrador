@@ -23,7 +23,7 @@ from src.tx.modules.plano_de_corte.types import (
 )
 from src.tx.tx import Tx
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("src.subcommands.novo_plano_de_corte")
 
 
 def coerce_nan_to_none(x: Any) -> Any:
@@ -103,8 +103,14 @@ def get_figure_for_layout(parsed_args: Namespace, plano: PlanoDeCorteCsvModel):
 def parse_files(parsed_args: Namespace):
     logger.info("Lendo arquivos csv...")
 
-    layouts_df = read_csv(parsed_args.layouts_file, sep=parsed_args.sep)
-    parts_df = read_csv(parsed_args.parts_file, sep=parsed_args.sep)
+    layouts_df = read_csv(
+        parsed_args.layouts_file,
+        sep=parsed_args.sep,
+        converters={"codigo_layout": str, "codigo_lote": str},
+    )
+    parts_df = read_csv(
+        parsed_args.parts_file, sep=parsed_args.sep, converters={"codigo_layout": str}
+    )
 
     logger.debug("Layouts: %s", layouts_df)
     logger.debug("Parts: %s", parts_df)

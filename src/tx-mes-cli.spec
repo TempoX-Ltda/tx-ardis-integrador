@@ -2,6 +2,7 @@
 
 datas = [
     ('./version', './src/'),
+    ('./icone_tx.ico', './src/'),
     ('tx', 'tx'),
     ('subcommands', 'subcommands'),
 ]
@@ -39,4 +40,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='./icone_tx.ico',
 )

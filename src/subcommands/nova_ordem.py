@@ -3,7 +3,7 @@ import logging
 from argparse import Namespace
 from io import TextIOWrapper
 from typing import List
-
+import sys
 from httpx import Timeout
 from pydantic import ValidationError
 
@@ -17,6 +17,13 @@ from src.tx.tx import Tx
 
 logger = logging.getLogger("src.subcommands.nova_ordem")
 
+max_int = sys.maxsize
+while True:
+    try:
+        csv.field_size_limit(max_int)
+        break
+    except OverflowError:
+        max_int = int(max_int / 10)
 
 def detect_dialect(text: str):
     know_delimiters = ";,\t"

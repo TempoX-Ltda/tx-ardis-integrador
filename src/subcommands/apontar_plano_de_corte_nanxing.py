@@ -93,11 +93,18 @@ def processar_cycle(cycle, layouts_apontados, tx, tipo_apontamento, caminho_past
                     with open(caminho_arquivo_tx, "r", encoding="utf-8") as f:
                         conteudo_original = f.read()
 
-                    os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
+                    if not os.path.exists(caminho_arquivo_erro):
+                        os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
+                        with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
+                            f.write("\n")
+                            f.write(f"ERRO: {e}")
+                    else:
+                        with open(caminho_arquivo_erro, "a", encoding="utf-8") as f_dest, open(caminho_arquivo_tx, "r", encoding="utf-8") as f_src:
+                            f_dest.write("\n--- NOVA TENTATIVA ---\n")
+                            f_dest.write(f_src.read().strip())
+                            f_dest.write(f"\nERRO: {e}")
+                        os.remove(caminho_arquivo_tx)
 
-                    with open(caminho_arquivo_erro, "w", encoding="utf-8") as f:
-                        f.write(conteudo_original.strip() + "\n")
-                        f.write(f"ERRO: {e}")
                 except Exception as erro_renomear:
                     logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
 
@@ -154,10 +161,18 @@ def processar_sem_cycle(caminho_arquivo_tx_apontar_sem_cycle, layouts_apontados,
         except Exception as e:
             logger.error(f"Erro ao processar {caminho_arquivo_tx}: {e}")
             try:
-                os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
-                with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
-                    f.write("\n")
-                    f.write(f"ERRO: {e}")
+                if not os.path.exists(caminho_arquivo_erro):
+                    os.rename(caminho_arquivo_tx, caminho_arquivo_erro)
+                    with open(caminho_arquivo_erro, "a", encoding="utf-8") as f:
+                        f.write("\n")
+                        f.write(f"ERRO: {e}")
+                else:
+                    with open(caminho_arquivo_erro, "a", encoding="utf-8") as f_dest, open(caminho_arquivo_tx, "r", encoding="utf-8") as f_src:
+                        f_dest.write("\n--- NOVA TENTATIVA ---\n")
+                        f_dest.write(f_src.read().strip())
+                        f_dest.write(f"\nERRO: {e}")
+                    os.remove(caminho_arquivo_tx)
+
             except Exception as erro_renomear:
                 logger.error(f"Erro ao renomear ou escrever em {caminho_arquivo_erro}: {erro_renomear}")
 
@@ -224,7 +239,7 @@ def reapontar_planos_com_erro_nanxing(
                 logger.error(f"Erro ao reapontar {arquivo_erro.name}: {e}")
                 try:
                     with open(arquivo_erro, "a", encoding="utf-8") as f:
-                        f.write("\n")
+                        f.write("\n--- NOVA TENTATIVA ---\n")
                         f.write(f"ERRO: {e}")
                 except Exception as erro_escrita:
                     logger.error(f"Erro ao escrever no arquivo {arquivo_erro.name}: {erro_escrita}")
